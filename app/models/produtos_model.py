@@ -10,4 +10,4 @@ class Produtos(db.Model):
     marca = Column(String(255), nullable=False)
     fabricante = Column(String(255), nullable=False)
     qtd_estoque = Column(Integer, nullable=False)
-    logista_id = Column(Integer, ForeignKey(logista.id), nullable=False)
+    lojista_id = Column(Integer, ForeignKey(logista.id), nullable=False)
