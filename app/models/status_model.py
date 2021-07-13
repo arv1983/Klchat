@@ -6,10 +6,10 @@ from app.configs.database import db
 
 
 @dataclass
-class Users(db.Model):
+class Status(db.Model):
     id: int
     situacao: str
-
+    
     __tablename__ = "status"
 
     id = Column(Integer, primary_key=True)
