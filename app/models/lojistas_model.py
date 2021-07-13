@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
 
-from configs.database import db
-
+from app.configs.database import db
 
 @dataclass
 class Lojistas(db.Model):
@@ -23,6 +22,6 @@ class Lojistas(db.Model):
     senha = Column(String(255), nullable=False)
     cnpj = Column(String(14), nullable=False)
     telefone = Column(String(11), nullable=False)
-    endereco_id = Column(Integer, ForeignKey("enderecos.id"), nullable=False)
+    endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=True)
 
-    lojista_endereco = relationship("Enderecos", backref=backref("endereco_logista"))
+    lojista_endereco = relationship("Enderecos", backref=backref("endereco_lojista"))

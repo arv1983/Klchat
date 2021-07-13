@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, backref
 from werkzeug.security import check_password_hash, generate_password_hash
 from dataclasses import dataclass
 
-from configs.database import db
+from app.configs.database import db
 
 
 @dataclass
@@ -28,7 +28,7 @@ class Clientes(db.Model):
     cnpj = Column(String(14))
     telefone = Column(String(11), nullable=True)
 
-    endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=False)
+    endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=True)
 
     cliente_endereco = relationship("Endereco", backref=backref("endereco_cliente"))
 

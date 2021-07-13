@@ -21,6 +21,9 @@ class Produtos(db.Model):
     marca = Column(String(255), nullable=False)
     fabricante = Column(String(255), nullable=False)
     qtd_estoque = Column(Float, nullable=False)
-    lojista_id = Column(Integer, ForeignKey("lojista.id"), nullable=False)
+    lojista_id = Column(Integer, ForeignKey("lojistas.id"), nullable=False)
+    categoria_id = Column(Integer, ForeignKey("categorias.id"), nullable=False)
 
-    produto_logista = relationship("Produtos", backref=backref("logista_produto"))
+    produto_lojista = relationship("Produtos", backref=backref("lojista_produto"))
+    produto_categoria = relationship("Categorias", backref=backref("categoria_produto"))
+

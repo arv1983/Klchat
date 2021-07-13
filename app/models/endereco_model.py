@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from dataclasses import dataclass
 
-from configs.database import db
-
+from app.configs.database import db
 
 @dataclass
 class Endereco(db.Model):
