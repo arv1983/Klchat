@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
 
 class Logistas(db.Model):
-    __tablename__ = "logistas"
+    __tablename__ = "lojistas"
     id = Column(Text, nullable=False, primary_key=True)
     nome = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)

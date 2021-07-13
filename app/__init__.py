@@ -6,6 +6,7 @@ from app.configs import database, migrate
 env = Env()
 env.read_env()
 
+
 def create_app() -> Flask:
     app = Flask(__name__)
 
@@ -17,5 +18,3 @@ def create_app() -> Flask:
     migrate.init_app(app)
 
     return app
-
-
