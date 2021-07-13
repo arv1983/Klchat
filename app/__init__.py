@@ -2,6 +2,7 @@ from flask import Flask
 from environs import Env
 
 from app.configs import database, migrate
+from app import views
 
 env = Env()
 env.read_env()
@@ -16,5 +17,7 @@ def create_app() -> Flask:
 
     database.init_app(app)
     migrate.init_app(app)
+
+    views.init_app(app)
 
     return app
