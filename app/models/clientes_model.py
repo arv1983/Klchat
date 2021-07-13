@@ -1,12 +1,25 @@
-from . import db
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import check_password_hash, generate_password_hash
+from dataclasses import dataclass
 
+from configs.database import db
+
+
+@dataclass
 class Clientes(db.Model):
-    __tablename__="clientes"
+    id: int
+    nome: str
+    email: str
+    senha: str
+    cpf: str
+    cnpj: str
+    telefone: str
+    endereco_id: int
 
-    cliente_id = Column(Integer, primary_key=True)
+    __tablename__ = "clientes"
+
+    id = Column(Integer, primary_key=True)
 
     nome = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
@@ -15,7 +28,7 @@ class Clientes(db.Model):
     cnpj = Column(String(14))
     telefone = Column(String(11), nullable=True)
 
-    endereco_id = Column(Integer, ForeignKey("endereco.endereco_int") , nullable=False)
+    endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=False)
 
     cliente_endereco = relationship("Endereco", backref=backref("endereco_cliente"))
 

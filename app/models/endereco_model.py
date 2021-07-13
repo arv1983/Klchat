@@ -1,15 +1,27 @@
-from ast import Str
-from . import db
 from sqlalchemy import Column, Integer, String
+from dataclasses import dataclass
 
+from configs.database import db
+
+
+@dataclass
 class Endereco(db.Model):
-    __tablename__="endereco"
+    id: int
+    logadouro: str
+    numero: str
+    complemento: str
+    bairro: str
+    cidade: str
+    estado: str
+    cep: str
 
-    endereco_int = Column(Integer, primary_key=True)
-    logadouro=Column(String(255), nullable=False)
-    numero=Column(String(255), nullable=False)
-    complemento=Column(String(255), nullable=False)
-    bairro = Column(String(255), nullable=False) 
-    cidade = Column(String(255), nullable=False) 
-    estado = Column(String(2), nullable=False) 
-    cep = Column(String(8), nullable=False) 
+    __tablename__ = "endereco"
+
+    id = Column(Integer, primary_key=True)
+    logadouro = Column(String(255), nullable=False)
+    numero = Column(String(255), nullable=False)
+    complemento = Column(String(255), nullable=False)
+    bairro = Column(String(255), nullable=False)
+    cidade = Column(String(255), nullable=False)
+    estado = Column(String(2), nullable=False)
+    cep = Column(String(8), nullable=False)
