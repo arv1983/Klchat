@@ -1,9 +1,21 @@
-from . import db
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
+from dataclasses import dataclass
+
+from configs.database import db
 
 
+@dataclass
 class Clientes(db.Model):
+    id: int
+    nome: str
+    email: str
+    senha: str
+    cpf: str
+    cnpj: str
+    telefone: str
+    endereco_id: int
+
     __tablename__ = "clientes"
 
     id = Column(Integer, primary_key=True)
