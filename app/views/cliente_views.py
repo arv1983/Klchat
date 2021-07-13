@@ -1,6 +1,6 @@
 from app.models.clientes_model import Clientes
 from app.service.services import add_commit
-from app.models.lojistas_model import Logistas
+from app.models.lojistas_model import Lojistas
 from flask import request, Blueprint
 
 bp = Blueprint("bp_clientes", __name__)
@@ -9,18 +9,31 @@ bp = Blueprint("bp_clientes", __name__)
 def signup():
     data = request.get_json()
 
-    print(data)
-
     if data["tipo_usuario"] == "logista":
-        print("losgita")
-        new_losgista = Logistas(**data)
 
-        add_commit(new_losgista)
+        logist = {
+            "nome": data["nome"],
+            "email": data["email"],
+            "senha": data["senha"],
+            "cnpj": data["cnpj"],
+            "telefone": data["telefone"] 
+        }
+        # new_losgista = Lojistas(**data)
+
+        # add_commit(new_losgista)
 
     else:
-        print(data["cliente"])
+        cliente = {
+            "nome": data["nome"],
+            "email": data["email"],
+            "senha": data["senha"],
+            "cpf": data["cpf"] or "-",
+            "cnpj": data["cnpj"] or "-",
+            "telefone": data["telefone"] 
+        }
+
         
-        new_cliente = Clientes(**data)
-        add_commit(new_cliente)
+        # new_cliente = Clientes(**data)
+        # add_commit(new_cliente)
 
     return {"mensagem": "clientes"}

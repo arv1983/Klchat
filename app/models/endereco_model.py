@@ -1,8 +1,19 @@
-from . import db
 from sqlalchemy import Column, Integer, String
+from dataclasses import dataclass
 
+from app.configs.database import db
 
+@dataclass
 class Endereco(db.Model):
+    id: int
+    logadouro: str
+    numero: str
+    complemento: str
+    bairro: str
+    cidade: str
+    estado: str
+    cep: str
+
     __tablename__ = "endereco"
 
     id = Column(Integer, primary_key=True)
