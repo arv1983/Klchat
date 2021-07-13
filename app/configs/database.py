@@ -9,4 +9,4 @@ def init_app(app: Flask):
     app.db = db
 
     from app.models.endereco_model import Endereco
-    from app.models.clientes_mode import Clientes
+    from app.models.clientes_model import Clientes
