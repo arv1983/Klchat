@@ -1,5 +1,5 @@
 from app.models.clientes_model import Clientes
-from app.service.services import add_commit
+from app.services.services import add_commit
 from app.models.lojistas_model import Lojistas
 from flask import request, Blueprint
 
