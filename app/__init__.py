@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from environs import Env
 
 from app.configs import database, migrate
@@ -6,7 +7,7 @@ from app import views
 
 env = Env()
 env.read_env()
-
+jwt = JWTManager()
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -19,5 +20,6 @@ def create_app() -> Flask:
     migrate.init_app(app)
 
     views.init_app(app)
-
+    jwt.init_app(app)
+    
     return app
