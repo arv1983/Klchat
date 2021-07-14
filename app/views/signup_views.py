@@ -3,9 +3,9 @@ from app.services.services import add_commit
 from app.models.lojistas_model import Lojistas
 from flask import request, Blueprint, jsonify
 
-bp = Blueprint("bp_clientes", __name__)
+bp_signup = Blueprint("bp_signup", __name__)
 
-@bp.route("/signup", methods=["POST"])
+@bp_signup.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
 

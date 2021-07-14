@@ -4,9 +4,9 @@ from flask_jwt_extended import create_access_token
 from app.models.clientes_model import Clientes
 from app.models.lojistas_model import Lojistas
 
-login_bp = Blueprint("login_route", __name__)
+bp_login = Blueprint("login_route", __name__)
 
-@login_bp.route("/login", methods=["POST"])
+@bp_login.route("/login", methods=["POST"])
 def login():
 
     email = request.json.get("email", None)
