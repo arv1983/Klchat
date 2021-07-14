@@ -16,7 +16,7 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JSON_SORT_KEYS"] = False
     app.config["JWT_SECRET_KEY"] = env("JWT_SECRET_KEY")
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False #Token nunca expira - REMOVER APOS TERMINAR
 
     database.init_app(app)
     migrate.init_app(app)
