@@ -1,7 +1,7 @@
 from flask import current_app
 
-def add_commit(clas):
+def add_commit(classe):
     session = current_app.db.session
 
-    session.add(clas)
+    session.add(classe)
     session.commit()

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.configs.database import db
 
@@ -25,3 +26,14 @@ class Lojistas(db.Model):
     endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=True)
 
     lojista_endereco = relationship("Endereco", backref=backref("endereco_lojista"))
+
+    @property
+    def password(self):
+        return {"Error password cannot be accessed"}
+    @password.setter
+    def password(self, password):
+        self.senha = generate_password_hash(password=password, salt_length=10)
+
+    def check_password(self, password_compare):
+        return check_password_hash(self.senha, password_compare)
+    
