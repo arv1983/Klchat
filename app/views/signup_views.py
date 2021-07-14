@@ -1,9 +1,9 @@
 from app.models.clientes_model import Clientes
 from app.services.services import add_commit
 from app.models.lojistas_model import Lojistas
-from flask import request, Blueprint
+from flask import request, Blueprint, jsonify
 
-bp = Blueprint("bp_clientes", __name__)
+bp = Blueprint("bp_signup", __name__)
 
 @bp.route("/signup", methods=["POST"])
 def signup():
@@ -19,16 +19,12 @@ def signup():
             "cnpj": data["cnpj"],
             "telefone": data["telefone"] 
         }
-        
-        
-        new_lojista = Lojistas(**lojista)
-        
-        new_lojista.password(data["senha"])
+        new_losjista = Lojistas(**lojista)
+        new_losjista.password = data["senha"]
 
+        add_commit(new_losjista)
 
-        add_commit(new_lojista)
-
-        print("Lojistas Cadastrado")
+        return jsonify(new_losjista)
     else:
         cliente = {
             "nome": data["nome"],
@@ -38,12 +34,13 @@ def signup():
             "telefone": data["telefone"] 
         }
         
-        new_cliente = Clientes(**cliente)
+        print("cliente")
 
-        new_cliente.password(data["senha"])
+        new_cliente = Clientes(**cliente)
+        new_cliente.password = data["senha"]
+
+
 
         add_commit(new_cliente)
 
-        print("Cliente Cadastrado")
-
-    return {"mensagem": "clientes"}
+        return jsonify(new_cliente)

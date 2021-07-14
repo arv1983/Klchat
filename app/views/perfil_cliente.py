@@ -28,4 +28,4 @@ def perfil():
         record_db = Endereco(**data)
         record_db['id'] = cliente['id']
         add_commit(record_db)
-        print("Cliente Cadastrado")
+        print("endereco Cadastrado")

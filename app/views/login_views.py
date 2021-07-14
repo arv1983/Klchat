@@ -1,21 +1,24 @@
-from flask import Blueprint,request
+from flask import Blueprint,request, jsonify
 from http import HTTPStatus
-
-from werkzeug.utils import redirect
+from flask_jwt_extended import create_access_token
 from app.models.clientes_model import Clientes
-from app.models.lojistas import Lojistas
+from app.models.lojistas_model import Lojistas
 
-def create_user():
+bp = Blueprint("login_route", __name__)
 
-    email_user = request.get_json("email")
-    cliente = Clientes.query.filter_by(email=email_user).first()
-    lojista = Lojistas.query.filter_by(email=email_user).first()
+@bp.route("/login", methods=["POST"])
+def login():
+
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    cliente = Clientes.query.filter_by(email=email).first()
+    lojista = Lojistas.query.filter_by(email=email).first()
     msg={"Usuário não encontrado"}
     if cliente:
         user = cliente
     elif lojista:
         user = lojista
-    if user and user.check_password(password_user):
-        return redirect("/"), HTTPStatus.OK
+    if user and user.check_password(password):
+        token = create_access_token(identity=email)
+        return jsonify(access_token=token)
     return msg, HTTPStatus.NOT_FOUND
-    
