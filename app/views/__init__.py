@@ -2,6 +2,9 @@ from flask import Flask
 
 
 def init_app(app: Flask):
-    from .signup_views import bp as bp_cliente
 
-    app.register_blueprint(bp_cliente)
+    from app.views.signup_views import bp_signup
+    app.register_blueprint(bp_signup)
+
+    from app.views.login_views import bp_login
+    app.register_blueprint(bp_login)
