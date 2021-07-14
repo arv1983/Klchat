@@ -9,12 +9,11 @@ bp= Blueprint("login_route", __name__)
 
 @bp.route("/login", methods=["POST"])
 def login():
-
+    user = False
     email = request.json.get("email", None)
     senha = request.json.get("senha", None)
     cliente = Clientes.query.filter_by(email=email).first()
     lojista = Lojistas.query.filter_by(email=email).first()
-    msg={"Usuário não encontrado"}
     if cliente:
         user = cliente
     elif lojista:
@@ -23,4 +22,4 @@ def login():
     if user and user.check_password(senha):
         token = create_access_token(identity=email)
         return jsonify(access_token=token)
-    return msg, HTTPStatus.NOT_FOUND
+    return jsonify(msg="Usuário e/ou senha inválidos"), HTTPStatus.BAD_REQUEST
