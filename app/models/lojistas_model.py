@@ -24,4 +24,4 @@ class Lojistas(db.Model):
     telefone = Column(String(11), nullable=False)
     endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=True)
 
-    lojista_endereco = relationship("Enderecos", backref=backref("endereco_lojista"))
+    lojista_endereco = relationship("Endereco", backref=backref("endereco_lojista"))

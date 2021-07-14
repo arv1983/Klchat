@@ -9,19 +9,20 @@ bp = Blueprint("bp_clientes", __name__)
 def signup():
     data = request.get_json()
 
-    if data["tipo_usuario"] == "logista":
+    if data["tipo_usuario"] == "lojista":
 
-        logist = {
+        lojista = {
             "nome": data["nome"],
             "email": data["email"],
             "senha": data["senha"],
             "cnpj": data["cnpj"],
             "telefone": data["telefone"] 
         }
-        # new_losgista = Lojistas(**data)
+        new_losgista = Lojistas(**lojista)
 
-        # add_commit(new_losgista)
+        add_commit(new_losgista)
 
+        print("Lojistas Cadastrado")
     else:
         cliente = {
             "nome": data["nome"],
@@ -31,9 +32,11 @@ def signup():
             "cnpj": data["cnpj"] or "-",
             "telefone": data["telefone"] 
         }
-
         
-        # new_cliente = Clientes(**data)
-        # add_commit(new_cliente)
+        new_cliente = Clientes(**cliente)
+
+        add_commit(new_cliente)
+
+        print("Cliente Cadastrado")
 
     return {"mensagem": "clientes"}
