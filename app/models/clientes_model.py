@@ -37,7 +37,7 @@ class Clientes(db.Model):
         return {"Error password cannot be accessed"}
     @password.setter
     def create_password(self, password):
-        self.senha = generate_password_hash(password=password, salt_length=10)
+        self.senha = generate_password_hash(password, salt_length=10)
 
     def check_password(self, password_compare):
         return check_password_hash(self.senha, password_compare)
