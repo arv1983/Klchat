@@ -24,6 +24,6 @@ class Produtos(db.Model):
     lojista_id = Column(Integer, ForeignKey("lojistas.id"), nullable=False)
     categoria_id = Column(Integer, ForeignKey("categorias.id"), nullable=False)
 
-    produto_lojista = relationship("Produtos", backref=backref("lojista_produto"))
+    produto_lojista = relationship("Lojistas", backref=backref("lojista_produto"))
     produto_categoria = relationship("Categorias", backref=backref("categoria_produto"))
 
