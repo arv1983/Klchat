@@ -9,7 +9,7 @@ bp= Blueprint("login_route", __name__)
 
 @bp.route("/login", methods=["POST"])
 def login():
-
+    user = False
     email = request.json.get("email", None)
     senha = request.json.get("senha", None)
     cliente = Clientes.query.filter_by(email=email).first()
