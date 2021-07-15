@@ -1,3 +1,4 @@
+from flask import jsonify
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -30,6 +31,9 @@ class Clientes(db.Model):
 
     endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=True)
 
+    carrinho_id = Column(Integer)
+
+
     cliente_endereco = relationship("Endereco", backref=backref("endereco_cliente"))
 
 
@@ -43,4 +47,19 @@ class Clientes(db.Model):
 
     def check_password(self, password_compare):
         return check_password_hash(self.senha, password_compare)
+
+    @property
+    def serialized(self):
+        data = {
+            "nome": self.nome,
+            "email": self.email,
+            "telefone": self.telefone,
+            "endereco_id":self.endereco_id,
+            "carrinho_id":self.carrinho_id
+        }
+        if self.cnpj:
+            data["cnpj"] = self.cnpj
+        if self.cpf:
+            data["cpf"] = self.cpf
+        return jsonify(data)
     
