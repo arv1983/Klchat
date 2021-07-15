@@ -39,9 +39,7 @@ def signup():
         new_cliente.password = data.get("senha")
 
         add_commit(new_cliente)
-        new_carrinho = Carrinho(cliente_id = new_cliente.id)
+        new_carrinho = Carrinho(cliente_id = new_cliente.id, status_id = 1)
         add_commit(new_carrinho)
-        new_cliente.carrinho_id = new_carrinho.id
-        add_commit(new_cliente)
         
         return jsonify(new_cliente)

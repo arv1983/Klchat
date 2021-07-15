@@ -19,4 +19,7 @@ class Carrinho(db.Model):
 
     cliente_id = Column(Integer, ForeignKey("clientes.id"), nullable=False)
 
+    status_id = Column(Integer, ForeignKey("status.id"))
+        
+
     carrinho_cliente = relationship("Clientes", backref=backref("cliente_carrinho"))
