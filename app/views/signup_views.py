@@ -11,10 +11,11 @@ def signup():
 
     if data["tipo_usuario"] == "lojista":
 
+        
+        
         lojista = {
             "nome": data["nome"],
             "email": data["email"],
-            "senha": data["senha"],
             "cnpj": data["cnpj"],
             "telefone": data["telefone"] 
         }
@@ -33,8 +34,12 @@ def signup():
             "telefone": data["telefone"] 
         }
         
+        print("cliente")
+
         new_cliente = Clientes(**cliente)
         new_cliente.password = data["senha"]
+
+
 
         add_commit(new_cliente)
 

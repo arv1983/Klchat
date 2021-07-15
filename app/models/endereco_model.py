@@ -6,7 +6,7 @@ from app.configs.database import db
 @dataclass
 class Endereco(db.Model):
     id: int
-    logadouro: str
+    logradouro: str
     numero: str
     complemento: str
     bairro: str
@@ -17,7 +17,7 @@ class Endereco(db.Model):
     __tablename__ = "endereco"
 
     id = Column(Integer, primary_key=True)
-    logadouro = Column(String(255), nullable=False)
+    logradouro = Column(String(255), nullable=False)
     numero = Column(String(255), nullable=False)
     complemento = Column(String(255), nullable=False)
     bairro = Column(String(255), nullable=False)
