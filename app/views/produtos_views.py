@@ -31,8 +31,6 @@ def get_produto():
 
 
 
-
-
 # @bp.get("/produto/pesquisar/<string:query>")
 # def get_produto(query):
 #     produto = Produtos.query.filter_by(descricao=query)
