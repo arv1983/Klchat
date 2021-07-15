@@ -1,0 +1,6 @@
+class InputError(ValueError):
+    ...
+
+
+class OptionError(ValueError):
+    ...
