@@ -2,12 +2,13 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from environs import Env
 
-from app.configs import database, migrate
+from app.configs import database, migrate, commands
 from app import views
 
 env = Env()
 env.read_env()
 jwt = JWTManager()
+
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -16,10 +17,13 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JSON_SORT_KEYS"] = False
     app.config["JWT_SECRET_KEY"] = env("JWT_SECRET_KEY")
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False #Token nunca expira - REMOVER APOS TERMINAR
+    app.config[
+        "JWT_ACCESS_TOKEN_EXPIRES"
+    ] = False  # Token nunca expira - REMOVER APOS TERMINAR
 
     database.init_app(app)
     migrate.init_app(app)
+    commands.init_app(app)
 
     views.init_app(app)
     jwt.init_app(app)
