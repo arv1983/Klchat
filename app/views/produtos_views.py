@@ -30,13 +30,13 @@ def get_all_by_lojista_id(lojista_id):
     data = [produto.serialized for produto in produtos if produto.lojista_id == lojista_id]
     return jsonify(data), HTTPStatus.OK
 
-@bp.post("/produtos/busca")
+@bp.post("/produtos/buscar")
 def search_produto():
-    search = request.json.get("search", None)
+    busca = request.json.get("buscar", None)
     produtos = Produtos.query.filter(
-            Produtos.descricao.like((f'%{search}%')) 
-            | (Produtos.marca.like(f'%{search}%'))
-            | (Produtos.fabricante.like(f'%{search}%')))
+            Produtos.descricao.like((f'%{busca}%')) 
+            | (Produtos.marca.like(f'%{busca}%'))
+            | (Produtos.fabricante.like(f'%{busca}%')))
     data = [produto.serialized for produto in produtos]
     return jsonify(data), HTTPStatus.OK
 
