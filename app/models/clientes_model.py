@@ -29,6 +29,8 @@ class Clientes(db.Model):
     telefone = Column(String(11), nullable=True)
 
     endereco_id = Column(Integer, ForeignKey("endereco.id"), nullable=True)
+    carrinho_id = Column(Integer, ForeignKey("carrinho.id"), nullable=True)
+
 
     cliente_endereco = relationship("Endereco", backref=backref("endereco_cliente"))
 
