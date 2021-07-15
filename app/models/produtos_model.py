@@ -31,10 +31,13 @@ class Produtos(db.Model):
     @property
     def serialized(self):
         return {
+            "id": self.id,
             "descricao": self.descricao,
             "marca": self.marca,
             "fabricante": self.fabricante,
             "qtd_estoque": self.qtd_estoque,
             "valor_unitario":self.valor_unitario,
-            "categoria_id":self.categoria_id
+            "categoria_id":self.categoria_id,
+            "lojista_id":self.lojista_id
+
         }

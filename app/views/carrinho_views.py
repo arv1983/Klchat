@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.clientes_model import Clientes
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
 from datetime import date
-from ipdb import set_trace
 
 
 bp = Blueprint("carrinho_route", __name__)
