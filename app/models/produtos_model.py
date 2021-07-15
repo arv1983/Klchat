@@ -11,7 +11,7 @@ class Produtos(db.Model):
     descricao: str
     marca: str
     fabricante: str
-    qtd_estoque: Float
+    qtd_estoque: float
     lojista_id: int
 
     __tablename__ = "produtos"
@@ -21,9 +21,20 @@ class Produtos(db.Model):
     marca = Column(String(255), nullable=False)
     fabricante = Column(String(255), nullable=False)
     qtd_estoque = Column(Float, nullable=False)
+    valor_unitario = Column(Float, default=0 )
     lojista_id = Column(Integer, ForeignKey("lojistas.id"), nullable=False)
     categoria_id = Column(Integer, ForeignKey("categorias.id"), nullable=False)
-
+    
     produto_lojista = relationship("Lojistas", backref=backref("lojista_produto"))
     produto_categoria = relationship("Categorias", backref=backref("categoria_produto"))
 
+    @property
+    def serialized(self):
+        return {
+            "descricao": self.descricao,
+            "marca": self.marca,
+            "fabricante": self.fabricante,
+            "qtd_estoque": self.qtd_estoque,
+            "valor_unitario":self.valor_unitario,
+            "categoria_id":self.categoria_id
+        }
