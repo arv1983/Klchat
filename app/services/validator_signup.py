@@ -22,7 +22,7 @@ class ValidatorSignup:
             )
 
         if not data.get("tipo_usuario") in self.TYPE_USUARIO:
-            raise OptionError(
+            raise InputError(
                 {
                     "Error": "tip_usuario inválido!",
                     "recebido": data.get("tipo_usuario"),
@@ -42,7 +42,7 @@ class ValidatorSignup:
 
         # Validacao  logista ou cliente
         if data.get("tipo_usuario") == "lojista":
-            # cnpj obrigatorio
+            # cnpj obrigatorio e se já existe
             pass
 
         else:

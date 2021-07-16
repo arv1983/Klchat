@@ -1,3 +1,4 @@
+from app.exc import InputError
 from flask import request, Blueprint, jsonify
 
 from app.models.clientes_model import Clientes
@@ -13,6 +14,13 @@ bp = Blueprint("bp_signup", __name__)
 @bp.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
+
+    try:
+        #ValidatorSignup.validar(data)
+        pass
+    except InputError as err:
+        return jsonify(err)
+    
 
     if data["tipo_usuario"] == "lojista":
 
