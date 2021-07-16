@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from app.exc import InputError
 from flask import request, Blueprint, jsonify
 
@@ -7,20 +8,20 @@ from app.models.lojistas_model import Lojistas
 from app.models.carrinho_model import Carrinho
 
 from app.services.validator_signup import ValidatorSignup
+from app.services.regex import ValidatorRegex
 
 bp = Blueprint("bp_signup", __name__)
 
 
 @bp.route("/signup", methods=["POST"])
 def signup():
-    data = request.get_json()
 
     try:
-        #ValidatorSignup.validar(data)
-        pass
+        validator = ValidatorSignup()
+        data = request.get_json()
+        validator.signup(data)
     except InputError as err:
-        return jsonify(err)
-    
+        return err.args
 
     if data["tipo_usuario"] == "lojista":
 
@@ -38,6 +39,14 @@ def signup():
 
         return jsonify(new_lojista)
     else:
+        try:
+            if data.get("cpf"):
+                data["cpf"] = ValidatorRegex.cpf(data.get("cpf"))
+            if data.get("cnpj"):
+                pass
+        except InputError as err:
+            return err.args
+
         cliente = {
             "nome": data.get("nome", None),
             "email": data.get("email", None),
