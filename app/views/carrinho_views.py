@@ -17,11 +17,12 @@ def inserir_carrinho():
     email = get_jwt_identity()
     
     cliente = Clientes.query.filter_by(email=email).first()
-    
+    produto = Produtos.query.filter_by(id=data.get("produto_id", None)).first()
     item = {
-        "produto_id": data.get("produto_id", None),
+        "produto_id": produto.id,
         "quantidade": data.get("quantidade", 1),
         "carrinho_id": cliente.carrinho_id,
+        "lojista_id": produto.lojista_id,
         "data_prod_inserida": date.today()
     }
 

@@ -23,7 +23,7 @@ class Vendas(db.Model):
 
     id = Column(Integer, primary_key=True)
     valor_total = Column(Float, nullable=False)
-    nota_fiscal = Column(String(255), nullable=False)
+    nota_fiscal = Column(String(255))
     cupom_id = Column(Integer, nullable=False, default=0)
     data_venda = Column(Date, nullable=False)
 
