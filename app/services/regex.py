@@ -1,5 +1,7 @@
 import re
 from http import HTTPStatus
+from validate_docbr import CPF, CNPJ
+
 
 from app.exc import InputError
 
@@ -15,43 +17,33 @@ class ValidatorRegex:
         return False
 
     @staticmethod
-    def telefone(telefone: str) -> bool:
-        regex1 = r"\b([0-9]{2,3})?([0-9]{2})([0-9]{4,5})([0-9]{4})\b"
+    def telefone(telefone: str) -> str:
+        regex1 = r"\b([1-9]{2,3})?([0-9]{2})([0-9]{4,5})([0-9]{4})\b"
 
-        if re.match(regex1, telefone):
-            return True
+        _telefone = "".join(re.findall(r"\d", str(telefone)))
 
-        return False
+        if not re.match(regex1, _telefone):
+            return False
 
-    @staticmethod
-    def cpf(cpf: str) -> bool:
-
-        cpf = "".join(re.findall(r"\d", str(cpf)))
-
-        if not cpf or len(cpf) < 11:
-            raise InputError(
-                {"Error": "CPF inválido, precisa minimo 11 números", "Recebido": cpf},
-                HTTPStatus.BAD_REQUEST,
-            )
-
-        antigo = [int(d) for d in cpf]
-
-        novo = antigo[:9]
-        while len(novo) < 11:
-            resto = sum([v * (len(novo) + 1 - i) for i, v in enumerate(novo)]) % 11
-
-            digito_verificador = 0 if resto <= 1 else 11 - resto
-
-            novo.append(digito_verificador)
-
-        if novo != antigo:
-            raise InputError(
-                {"Error": "CPF inválido, número cpf inválido", "Recebido": cpf},
-                HTTPStatus.BAD_REQUEST,
-            )
-
-        return cpf
+        return _telefone
 
     @staticmethod
-    def cnpj(cnpj: str) -> bool:
-        pass
+    def cpf(cpf: str) -> str:
+        val_cpf = CPF()
+        _cpf = "".join(re.findall(r"\d", str(cpf)))
+
+        if not val_cpf.validate(_cpf):
+            return False
+
+        return _cpf
+
+    @staticmethod
+    def cnpj(cnpj: str) -> str:
+        val_cnpj = CNPJ()
+
+        _cnpj = "".join(re.findall(r"\d", str(cnpj)))
+
+        if not val_cnpj.validate(_cnpj):
+            return False
+
+        return _cnpj

@@ -19,7 +19,7 @@ def signup():
     try:
         validator = ValidatorSignup()
         data = request.get_json()
-        validator.signup(data)
+        data = validator.signup(data)
     except InputError as err:
         return err.args
 
@@ -39,13 +39,6 @@ def signup():
 
         return jsonify(new_lojista)
     else:
-        try:
-            if data.get("cpf"):
-                data["cpf"] = ValidatorRegex.cpf(data.get("cpf"))
-            if data.get("cnpj"):
-                pass
-        except InputError as err:
-            return err.args
 
         cliente = {
             "nome": data.get("nome", None),
