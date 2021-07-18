@@ -48,9 +48,11 @@ def inserir_carrinho():
 @jwt_required()
 def ver_carrinho():
 
-    email = get_jwt_identity()
-    
-    cliente = Clientes.query.filter_by(email=email).first()
+    try:   
+        cliente = ValidatorCarrinho.check_client(get_jwt_identity())
+        
+    except AttributeError as err:
+        return err.args
     
     itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id=cliente.carrinho_id).all()
     produtos = []
