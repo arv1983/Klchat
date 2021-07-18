@@ -1,3 +1,5 @@
+from app.exc import InputError
+from app.services.validator_carrinho import ValidatorCarrinho
 from app.models.produtos_model import Produtos
 from app.services.services import add_commit
 from flask import Blueprint,request, jsonify
@@ -13,23 +15,34 @@ bp = Blueprint("carrinho_route", __name__)
 @bp.post("/carrinho")
 @jwt_required()
 def inserir_carrinho():
-    data = request.get_json()
-    email = get_jwt_identity()
     
-    cliente = Clientes.query.filter_by(email=email).first()
-    produto = Produtos.query.filter_by(id=data.get("produto_id", None)).first()
-    item = {
+    try:
+        cliente = ValidatorCarrinho.check_client(get_jwt_identity())
+        data = ValidatorCarrinho.verify_request_data(request.get_json())
+        produto = ValidatorCarrinho.found_product(data.get("produto_id"))
+        ValidatorCarrinho.check_stock(produto, data.get("quantidade", 1))
+        
+        item = {
         "produto_id": produto.id,
         "quantidade": data.get("quantidade", 1),
         "carrinho_id": cliente.carrinho_id,
         "lojista_id": produto.lojista_id,
         "data_prod_inserida": date.today()
-    }
+        }
 
-    itens_carrinho = Carrinho_Produto(**item)
-    add_commit(itens_carrinho)
+        itens_carrinho = Carrinho_Produto(**item)
+        add_commit(itens_carrinho)
 
-    return {"msg": "Produto inserido"}
+        return {"msg": "Produto inserido"}
+
+    except InputError as err:
+        return err.args
+
+    except AttributeError as err:
+        return err.args
+    
+    
+    
 
 @bp.get("/carrinho")
 @jwt_required()
@@ -61,3 +74,14 @@ def ver_carrinho():
     
 
     return (jsonify(data))
+
+bp.route("/carrinho", methods=["PATCH", "PUT"])
+@jwt_required()
+def alterar_carrinho():
+    data = request.get_json()
+
+    email = get_jwt_identity()
+    
+    cliente = Clientes.query.filter_by(email=email).first()
+    
+    itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id=cliente.carrinho_id).all()
