@@ -21,7 +21,7 @@ class Produtos(db.Model):
     descricao = Column(String(255), nullable=False)
     marca = Column(String(255), nullable=False)
     qtd_estoque = Column(Float, nullable=False)
-    valor_unitario = Column(Float, default=0 )
+    valor_unitario = Column(Float, nullable=False)
     lojista_id = Column(Integer, ForeignKey("lojistas.id"), nullable=False)
     categoria_id = Column(Integer, ForeignKey("categorias.id"), nullable=False)
     
