@@ -33,9 +33,9 @@ def venda():
 
         
         produtos_lojista = Produtos.query.filter_by(lojista_id=query_empresa.id).all()
-
-        Carrinho_Produto.query.filter_by(produto_id=)
         print(produtos_lojista)
+        # Carrinho_Produto.query.filter_by(produto_id=)
+        # print(produtos_lojista)
 
 
 
