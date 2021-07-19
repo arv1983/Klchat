@@ -1,53 +1,71 @@
+from flask import current_app
 from flask import request, Blueprint, jsonify
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
-from app.services.services import add_commit
 from sqlalchemy.sql.elements import BinaryExpression
+from sqlalchemy.sql.functions import user
+
+from app.exc import InputError
+from app.services.services import add_commit
+from app.services.validator_perfil import ValidatorPerfil
+
 from app.models.clientes_model import Clientes
 from app.models.endereco_model import Endereco
 from app.models.lojistas_model import Lojistas
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask import current_app
 
 
 bp = Blueprint("bp_perfil", __name__)
 
 
-@bp.route("/perfil", methods=["POST", "GET"])
+@bp.route("/perfil", methods=["POST", "GET", "PUT"])
 @jwt_required()
 def perfil():
     data = request.get_json()
 
     cliente = Clientes.query.filter_by(email=get_jwt_identity()).first()
     empresa = Lojistas.query.filter_by(email=get_jwt_identity()).first()
+    user = cliente if cliente else empresa
 
-    if request.method == 'POST':
-        possible_vars = ["logradouro", "numero", "complemento", "bairro", "cidade", "estado", "cep"]
-        if not all(name in possible_vars for name in data.keys()):
-            keys_w = {value for value in data.keys() if not value in possible_vars}
-            return {"available_keys": possible_vars, "wrong_keys_sended": list(keys_w)},422
+    validator = ValidatorPerfil()
 
+    if request.method == "POST":
+        try:
+            data = validator.check_data(data, user)
 
-        
-        
+        except InputError as err:
+            return err.args
+
         novo_endereco = Endereco(**data)
         add_commit(novo_endereco)
+        user.endereco_id = novo_endereco.id
+        setattr(user, "endereco_id", novo_endereco.id)
+        add_commit(user)
 
-        if empresa:
-            empresa.endereco_id = novo_endereco.id
-            setattr(empresa, "endereco_id", novo_endereco.id)
-            add_commit(empresa)
+        return {"endereco": "cadastrado"}, HTTPStatus.OK
 
-        if cliente:
-            cliente.endereco_id = novo_endereco.id
-            setattr(cliente, "endereco_id", novo_endereco.id)
-            add_commit(cliente)
-        
-        return {'endeco': 'cadastrado'}
-    
-    if request.method == 'GET':
-        print(empresa)
-        if empresa:
-            return jsonify(Endereco.query.filter_by(id=empresa.endereco_id).first())
-        if cliente:
-            return jsonify(Endereco.query.filter_by(id=cliente.endereco_id).first())
+    if request.method == "GET":
 
+        address = Endereco.query.filter_by(id=user.endereco_id).first()
+
+        if address:
+            return (
+                jsonify(address),
+                HTTPStatus.OK,
+            )
+
+        return {"Info": "Endereço não cadastrado"}, HTTPStatus.NOT_FOUND
+
+    if request.method == "PUT":
+
+        try:
+            data = validator.check_data(data)
+        except InputError as err:
+            return err.args
+
+        update_endereco = Endereco(**data)
+        add_commit(update_endereco)
+        user.endereco_id = update_endereco.id
+        setattr(user, "endereco_id", update_endereco.id)
+        add_commit(user)
+
+        return jsonify({"Endereco": "Atualziado!"}), HTTPStatus.OK
