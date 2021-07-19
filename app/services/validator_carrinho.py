@@ -1,3 +1,4 @@
+from app.models.pivo_carrinho_produto_model import Carrinho_Produto
 from app.models.clientes_model import Clientes
 from app.exc import InputError
 from app.models.produtos_model import Produtos
@@ -69,3 +70,42 @@ class ValidatorCarrinho:
                 HTTPStatus.BAD_REQUEST,
             )
         return cliente
+
+    def check_data_edit_cart(data):
+        quantidade = data.get("quantidade", None)
+        if not data or not quantidade:
+            raise InputError(
+                {"Error": "Request faltando dados obrigatórios.", 
+                "Obrigatórios": {"quantidade": "Um valor do tipo inteiro ou float."}},
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        try:
+            data = {
+                "quantidade": float(quantidade)
+            }
+        except:
+            raise InputError(
+                {"Error": "Valor informado é inválido.", 
+                "Recebido": data,
+                "Esperado": {
+                    "quantidade": "Um valor do tipo inteiro ou float."
+                    }},
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        return data["quantidade"]
+
+    def check_prod_in_cart(carrinho_id, produto_id):
+        produto = Carrinho_Produto.query.filter_by(
+        carrinho_id=carrinho_id, 
+        produto_id=produto_id
+        ).first()
+        if not produto:
+            raise AttributeError(
+                {"Error": "Este produto não se encontra neste carrinho."},
+                HTTPStatus.BAD_REQUEST,
+            )
+        return produto
+
+
