@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from app.configs.database import db
 
+
 @dataclass
 class Endereco(db.Model):
     id: int
@@ -19,7 +20,7 @@ class Endereco(db.Model):
     id = Column(Integer, primary_key=True)
     logradouro = Column(String(255), nullable=False)
     numero = Column(String(255), nullable=False)
-    complemento = Column(String(255), nullable=False)
+    complemento = Column(String(255))
     bairro = Column(String(255), nullable=False)
     cidade = Column(String(255), nullable=False)
     estado = Column(String(2), nullable=False)
