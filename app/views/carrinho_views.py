@@ -62,7 +62,6 @@ def ver_carrinho():
             "id": produto.id,
             "descricao": produto.descricao,
             "marca": produto.marca,
-            "fabricante": produto.fabricante,
             "quantidade": item.quantidade,
             "valor_unitario": produto.valor_unitario,
             "lojista_id": produto.lojista_id
@@ -77,13 +76,24 @@ def ver_carrinho():
 
     return (jsonify(data))
 
-bp.route("/carrinho", methods=["PATCH", "PUT"])
+bp.route("/carrinho/<int:produto_id>", methods=["PATCH", "PUT"])
 @jwt_required()
-def alterar_carrinho():
+def alterar_carrinho(produto_id):
     data = request.get_json()
+    
+    try:   
+        cliente = ValidatorCarrinho.check_client(get_jwt_identity())
+        
+    except AttributeError as err:
+        return err.args
+    
+    produto = Carrinho_Produto.query.filter_by(
+        carrinho_id=cliente.carrinho_id, 
+        produto_id=produto_id
+        ).first()
 
-    email = get_jwt_identity()
-    
-    cliente = Clientes.query.filter_by(email=email).first()
-    
-    itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id=cliente.carrinho_id).all()
+    produto.quantidade = data["quantidade"]
+
+    add_commit(produto)
+
+    return produto
