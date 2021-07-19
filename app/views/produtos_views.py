@@ -1,3 +1,5 @@
+from app.services.validator_produtos import ValidatorProdutos
+from app.exc import InputError
 from app.services.services import add_commit
 from flask import Blueprint, request, jsonify
 from app.models.produtos_model import Produtos
@@ -9,6 +11,13 @@ bp = Blueprint("produtos_route",__name__)
 @bp.post("/produtos")
 @jwt_required()
 def create_product():
+    try:
+        produto = ValidatorProdutos()
+        data = request.get_json()
+        data = produto.produto(data)
+    except InputError as e:
+        return e.args
+
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     if lojista:
         data = request.get_json()
