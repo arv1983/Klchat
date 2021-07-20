@@ -12,7 +12,7 @@ class Clientes(db.Model):
     id: int
     nome: str
     email: str
-    senha: str
+    # senha: str
     cpf: str
     cnpj: str
     telefone: str
@@ -33,14 +33,12 @@ class Clientes(db.Model):
 
     carrinho_id = Column(Integer)
 
-
     cliente_endereco = relationship("Endereco", backref=backref("endereco_cliente"))
-
-
 
     @property
     def password(self):
         return {"Error password cannot be accessed"}
+
     @password.setter
     def password(self, password):
         self.senha = generate_password_hash(password=password, salt_length=10)
@@ -54,12 +52,11 @@ class Clientes(db.Model):
             "nome": self.nome,
             "email": self.email,
             "telefone": self.telefone,
-            "endereco_id":self.endereco_id,
-            "carrinho_id":self.carrinho_id
+            "endereco_id": self.endereco_id,
+            "carrinho_id": self.carrinho_id,
         }
         if self.cnpj:
             data["cnpj"] = self.cnpj
         if self.cpf:
             data["cpf"] = self.cpf
         return jsonify(data)
-    
