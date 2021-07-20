@@ -52,24 +52,42 @@ def search_produto():
 
 
 @bp.patch("/produtos/<int:produto_id>")
+@jwt_required()
 def update_produto(produto_id):
     produto: Produtos
-
     produto = Produtos.query.filter_by(id=produto_id).first()
 
+    validate = ValidatorProdutos()
     data = request.get_json()
 
     if not produto:
         return {"Error": "Produto não encontrado"}, HTTPStatus.NOT_FOUND
 
-    print("----", produto)
+    lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
+    if produto.lojista_id != lojista.id:
+        return {
+            "Error": "Cadastro de produto não permitido para este tipo de usuário!",
+            "lojista_id logado": lojista.id,
+            "lojista_id do produto": produto.lojista_id,
+        }, HTTPStatus.BAD_REQUEST
+
     if data.get("qtd_estoque"):
         qtd_nova = produto.qtd_estoque + float(data.get("qtd_estoque"))
+        print(qtd_nova)
         data["qtd_estoque"] = qtd_nova
 
-    for item in data:
-        update_item = "{{data}:{data[0]}}"
+    try:
+        elm = validate.valida_patch(data)
 
-        # produto.update()
+        for key, value in data.items():
+            setattr(produto, key, value)
 
-    return {"Atualizado": update_item}, HTTPStatus.OK
+        add_commit(produto)
+
+    except InputError as e:
+        return e.args
+
+    except Exception as e:
+        return e.args, HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return {"inf": "Produto atualizado!"}, HTTPStatus.OK
