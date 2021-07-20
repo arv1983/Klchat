@@ -12,7 +12,7 @@ from flask import request, Blueprint, jsonify
 
 bp = Blueprint("bp_vendas_andamento", __name__)
 # provisorio
-@bp.route("/vendas", methods=["GET"])
+@bp.route("/vendas-andamento", methods=["GET"])
 @jwt_required()
 def venda():
     
