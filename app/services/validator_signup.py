@@ -115,24 +115,30 @@ class ValidatorSignup:
 
         # Validação se Cliente
         else:
-            # cpf
-            _cpf = validate.cpf(data.get("cpf"))
-            if not _cpf:
+            # cpf / cnpj
+            _cpf = validate.cpf(data.get("cpf", None))
+            _cnpj = validate.cnpj(data.get("cnpj", None))
+
+            if not _cpf and not _cnpj:
                 raise InputError(
                     {
-                        "Error": "cpf com erro ou não enviado",
-                        "recebido": _cpf,
+                        "Error": "cpf ou cnpj com erro ou não enviado, obrigatório um dos dois.",
+                        "recebido": _cpf if _cpf else _cnpj,
                     },
                     HTTPStatus.BAD_REQUEST,
                 )
 
-            data["cpf"] = _cpf
+            if _cpf:
+                data["cpf"] = _cpf
+            if _cnpj:
+                data["cnpj"] = _cnpj
 
             # email in db
             cli_email = Clientes.query.filter_by(email=data.get("email")).first()
             cli_cpf = Clientes.query.filter_by(cpf=data.get("cpf")).first()
+            cli_cnpj = Clientes.query.filter_by(cpf=data.get("cpf")).first()
 
-            if cli_email or cli_cpf:
+            if cli_email or cli_cpf or cli_cnpj:
                 raise InputError(
                     {
                         "Error": "Email ou cpf já cadastrado",
