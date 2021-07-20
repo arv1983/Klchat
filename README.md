@@ -4,6 +4,7 @@
 
 #
 **Links**
+api: https://klchat.herokuapp.com
 [Documentação Projeto](https://andersonvaler.github.io/documentation-capstone/)
 
 #
@@ -20,7 +21,7 @@
 7. Vendas
 8. Status
 
-##
+---
 * ### Signup
 
 Cadastro de cliente podendo ser Pessoa Fisica, Pessoa Juridica é Lojista (quem vai fornecer os produtos na plataforma).
@@ -54,6 +55,7 @@ Cadastro de cliente podendo ser Pessoa Fisica, Pessoa Juridica é Lojista (quem 
 }
 ~~~
 **Clientes CNPJ**
+
 **Body** - `json`
 ~~~
 {
@@ -109,8 +111,8 @@ Cadastro de cliente podendo ser Pessoa Fisica, Pessoa Juridica é Lojista (quem 
 }
 ~~~
 
-#
-##
+---
+
 * ### Login
 Gera um token de acesso.
 
@@ -131,11 +133,12 @@ Gera um token de acesso.
   	"access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4NiwianRpIjoiMWNmZDYwNGItNDk5ZC00MzgwLTk2YWEtNTgxMjdmNmY0OTFmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImJydW5vQGJydW5vLmNvbSIsIm5iZiI6MTYyNjcxNjU4Nn0.y3kzn5DZOeh1b2rvEs2uHVf72uj0ZJ39ooNaaGWnr8U"
 }
 ~~~
+---
 
-#
-##
 * ### Enderecos
 Cadastrar um endereço serve para Cliente e Lojista.
+
+- Cadastro de endereço
 
 |url       | metodo   | status  |
 |:---------: |:---------: |:---------:|
@@ -212,9 +215,8 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 	"endereco": "Atualizado"
 }
 ~~~
+---
 
-#
-##
 * ### Carinho
 Gerenciamento de produtos de um carrinho.
 
@@ -250,6 +252,10 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 |:---------: |:---------: |:---------:|
 |`/carrinho`   |`Delete`	  |	`204 - 400`	|
 
+**Response** - `status`
+~~~
+200
+~~~
 - Deleta um produto do carrinho
 
 
@@ -257,6 +263,10 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 |:---------: |:---------: |:---------:|
 |`/carrinho/id`   |`Delete`	  |	`200 - 400`	|
 
+**Response** - `status`
+~~~
+200
+~~~
 
 - Deleta um produto do carrinho
 
@@ -264,14 +274,9 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 |:---------: |:---------: |:---------:|
 |`/carrinho/id`   |`Patch`	  |	`200 - 400`	|
 
-**Body** - `json`
-
+**Response** - `status`
 ~~~
-~~~
-
-**Response** - `json`
-
-~~~
+200
 ~~~
 
 - Inserir produto no carrinho
@@ -325,22 +330,31 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 }
 ~~~
 
-#
-##
+---
+
 * ### Produto
 Cadastro de produto associado ao lojista.
 
-- Buscar produto name
+- Buscar produto
 
 |url       | metodo   | status  |
 |:---------: |:---------: |:---------:|
 |`/produto`   |`Post`	  |	`200 - 400`	|
 
-**Body** - `json`
+*Obs: `?` concatenar rota com parametros.*
+Ex: `/produto?lojista_id=3`
+
+*Obs: `&` concatenar entre um parametros e outro.*
+Ex: `/produto?marca=Philips&lojista_id=3`
+
+**Body** - `Param`
 ~~~
-{
-	"buscar":"tv"
-}
+	marca=Phillips
+	descricao=led
+	modelo=40
+	valor_max=100
+	valor_min=1000
+	lojista_id=3
 ~~~
 
 **Response** - `json`
@@ -370,82 +384,6 @@ Cadastro de produto associado ao lojista.
 ]
 ~~~
 
-- Buscar produto da loja
-
-|url       | metodo   | status  |
-|:---------: |:---------: |:---------:|
-|`/produto/id`   |`Get`	  |	`200 - 400`	|
-
-**Response** - `json`
-
-~~~
-[
-	{
-		"id": 6,
-		"modelo": "tv_40_led",
-		"descricao": "Tv led 40 polegadas",
-		"marca": "Philips",
-		"qtd_estoque": 10.0,
-		"valor_unitario": 1200.0,
-		"categoria_id": 1,
-		"lojista_id": 3
-	},
-	{
-		"id": 7,
-		"modelo": "tv_50_led",
-		"descricao": "Tv led 50 polegadas",
-		"marca": "Philips",
-		"qtd_estoque": 10.0,
-		"valor_unitario": 1200.0,
-		"categoria_id": 1,
-		"lojista_id": 3
-	},
-	{
-		"id": 8,
-		"modelo": "mk_s_12",
-		"descricao": "Caixa de som",
-		"marca": "Philips",
-		"qtd_estoque": 10.0,
-		"valor_unitario": 1200.0,
-		"categoria_id": 1,
-		"lojista_id": 3
-	}
-]
-~~~
-
-- Buscar todos os produto
-
-|url       | metodo   | status  |
-|:---------: |:---------: |:---------:|
-|`/produto`   |`Get`	  |	`200 - 400`	|
-
-**Response** - `json`
-
-~~~
-[
-	{
-		"id": 3,
-		"modelo": "MK-M_12",
-		"descricao": "Camiseta",
-		"marca": "Polo",
-		"qtd_estoque": 10.0,
-		"valor_unitario": 310.0,
-		"categoria_id": 1,
-		"lojista_id": 1
-  	},
-	{
-		"id": 10,
-		"modelo": "brioche",
-		"descricao": "cacetinho de chocolate",
-		"marca": "padaria A",
-		"qtd_estoque": 50.0,
-		"valor_unitario": 0.0,
-		"categoria_id": 1,
-		"lojista_id": 7
-	}
-]
-~~~
-
 - Cadastrar produto
 
 |url       | metodo   | status  |
@@ -462,36 +400,36 @@ Cadastro de produto associado ao lojista.
 ~~~
 ~~~
 
-*Authorization*
-~~~
-Bearer:
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4NiwianRpIjoiMWNmZDYwNGItNDk5ZC00MzgwLTk2YWEtNTgxMjdmNmY0OTFmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImJydW5vQGJydW5vLmNvbSIsIm5iZiI6MTYyNjcxNjU4Nn0.y3kzn5DZOeh1b2rvEs2uHVf72uj0ZJ39ooNaaGWnr8U
-~~~
+
+- Editar produto
+
+|url       | metodo   | status  |
+|:---------: |:---------: |:---------:|
+|`/produto/id`   |`Post`	  |	`200 - 400`	|
+
 **Body** - `json`
 
 ~~~
 {
-	"descricao": "cacetinho de chocolate",
-	"marca": "padaria A",
-	"modelo": "brioche MG",
-	"qtd_estoque": 100,
-	"lojista_id": 1,
-	"valor_unitario": 10.20
+	"descricao": "Nova descricao"
 }
 ~~~
 
 **Response** - `json`
 
 ~~~
+{
+
+}
 ~~~
+---
 
-
-#
-##
 * ### Vendas
 Gera um o inicio de uma venda e altera o status o status do carrinho para finalizado.
 
 - Ver vendas
+
+
 
 |url       | metodo   | status  |
 |:---------: |:---------: |:---------:|
@@ -554,67 +492,3 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 
 ~~~
 ~~~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- #
-##
-* ### Categorias
-Categorais Produtos.
-
-|url       | metodo   | status  |
-|:---------: |:---------: |:---------:|
-|`/signup`   |`Post`	  |	`200 - 400`	|
-
-*Authorization*
-~~~
-Bearer:
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4NiwianRpIjoiMWNmZDYwNGItNDk5ZC00MzgwLTk2YWEtNTgxMjdmNmY0OTFmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImJydW5vQGJydW5vLmNvbSIsIm5iZiI6MTYyNjcxNjU4Nn0.y3kzn5DZOeh1b2rvEs2uHVf72uj0ZJ39ooNaaGWnr8U
-~~~
-
-**Body** - `json`
-
-~~~
-~~~
-
-**Response** - `json`
-
-~~~
-~~~
-
-#
-##
-* ### Status
-Situações da venda e do carrinho.
-
-|url       | metodo   | status  |
-|:---------: |:---------: |:---------:|
-|`/signup`   |`Post`	  |	`200 - 400`	|
-
-*Authorization*
-~~~
-Bearer:
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4NiwianRpIjoiMWNmZDYwNGItNDk5ZC00MzgwLTk2YWEtNTgxMjdmNmY0OTFmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImJydW5vQGJydW5vLmNvbSIsIm5iZiI6MTYyNjcxNjU4Nn0.y3kzn5DZOeh1b2rvEs2uHVf72uj0ZJ39ooNaaGWnr8U
-~~~
-
-**Body** - `json`
-
-~~~
-~~~
-
-**Response** - `json`
-
-~~~
-~~~ -->
