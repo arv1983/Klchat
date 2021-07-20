@@ -1,6 +1,5 @@
 import re
 from http import HTTPStatus
-from validate_docbr import CPF, CNPJ
 
 
 from app.exc import InputError

@@ -13,9 +13,23 @@ from app.models.lojistas_model import Lojistas
 class ValidatorPerfil:
 
     POSSIBLE_VAR = ["logradouro", "numero", "bairro", "cidade", "estado", "cep"]
+    UF = ["RO","AC","AM","RR","PA","AP","TO","MA","PI","CE","RN","PB","PE","AL","SE","BA","MG","ES",
+    "RJ","SP","PR","SC","RS","MS","MT","GO","DF"]
+
 
     def check_data(self, data: dict, user: object = False) -> dict:
         keys_w = [value for value in self.POSSIBLE_VAR if not value in data]
+        
+        
+        if data.get("estado") not in self.UF:
+            raise InputError({
+              "Error UF": "UF inválida",
+              "UF recebido":data.get("estado"),
+              "Valores aceitos":self.UF,
+        }, HTTPStatus.BAD_REQUEST)
+
+
+
         if keys_w:
             raise InputError(
                 {
