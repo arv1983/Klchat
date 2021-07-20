@@ -11,7 +11,6 @@ class ValidatorProdutos:
         "modelo",
         "qtd_estoque",
         "valor_unitario",
-        "lojista_id",
         "categoria_id",
     ]
 
@@ -43,3 +42,29 @@ class ValidatorProdutos:
                 HTTPStatus.BAD_REQUEST,
             )
         return data
+
+    def valida_patch(self, data: dict):
+
+        check = [has for has in self.campos if has in data]
+
+        if not check:
+            print("entrei no raise no check")
+            raise InputError(
+                {
+                    "Erro": "Dados enviados não fazem parte dos campos de Produto",
+                    "Enviado": data,
+                    "Alternativas": self.campos,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        if len(check) > 1:
+            raise InputError(
+                {
+                    "Erro": "Este método PATCH só aceita 1 campo por vez",
+                    "Enviado": data,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        return check

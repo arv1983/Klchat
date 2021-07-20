@@ -22,13 +22,13 @@ def create_product():
 
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     if lojista:
-        data = request.get_json()
         data["lojista_id"] = lojista.id
         add_commit(Produtos(**data))
         return data, HTTPStatus.CREATED
     return {
-        "msg": "Cadastro de produto não permitido para este usuário!"
+        "msg": "Cadastro de produto não permitido para este tipo de usuário!"
     }, HTTPStatus.BAD_REQUEST
+
 
 @bp.get("/produtos")
 def search_produto():
@@ -45,7 +45,49 @@ def search_produto():
         Produtos.modelo.like(f"%{modelo}%"),
         Produtos.lojista_id == (lojista) if lojista else Produtos.lojista_id > 0,
         Produtos.valor_unitario >= minimo,
-        Produtos.valor_unitario <= maximo
+        Produtos.valor_unitario <= maximo,
     ).order_by(Produtos.valor_unitario)
     data = [produto.serialized for produto in produtos]
     return jsonify(data), HTTPStatus.OK
+
+
+@bp.patch("/produtos/<int:produto_id>")
+@jwt_required()
+def update_produto(produto_id):
+    produto: Produtos
+    produto = Produtos.query.filter_by(id=produto_id).first()
+
+    validate = ValidatorProdutos()
+    data = request.get_json()
+
+    if not produto:
+        return {"Error": "Produto não encontrado"}, HTTPStatus.NOT_FOUND
+
+    lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
+    if produto.lojista_id != lojista.id:
+        return {
+            "Error": "Cadastro de produto não permitido para este tipo de usuário!",
+            "lojista_id logado": lojista.id,
+            "lojista_id do produto": produto.lojista_id,
+        }, HTTPStatus.BAD_REQUEST
+
+    if data.get("qtd_estoque"):
+        qtd_nova = produto.qtd_estoque + float(data.get("qtd_estoque"))
+        print(qtd_nova)
+        data["qtd_estoque"] = qtd_nova
+
+    try:
+        elm = validate.valida_patch(data)
+
+        for key, value in data.items():
+            setattr(produto, key, value)
+
+        add_commit(produto)
+
+    except InputError as e:
+        return e.args
+
+    except Exception as e:
+        return e.args, HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return {"inf": "Produto atualizado!"}, HTTPStatus.OK
