@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 class ValidatorProdutos:
     
-    campos = ["descricao", "marca", "modelo", "qtd_estoque","valor_unitario", "lojista_id", "categoria_id"]
+    campos = ["descricao", "marca", "modelo", "qtd_estoque","valor_unitario", "categoria_id"]
    
     def produto(self, data: dict):
 
