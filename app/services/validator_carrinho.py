@@ -1,3 +1,5 @@
+from app.services.services import add_commit
+from app.models.carrinho_model import Carrinho
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
 from app.models.clientes_model import Clientes
 from app.exc import InputError
@@ -107,5 +109,34 @@ class ValidatorCarrinho:
                 HTTPStatus.BAD_REQUEST,
             )
         return produto
+
+    def finish_cart(carrinho_id, cliente_id):
+        itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id=carrinho_id).all()
+        if not itens_carrinho:
+            raise AttributeError(
+                {"Error": "Seu carrinho está vazio."},
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        carrinho_atual = Carrinho.query.filter_by(id=carrinho_id).first()
+        carrinho_atual.status = 5
+        add_commit(carrinho_atual)
+
+        new_carrinho = Carrinho(cliente_id=cliente_id, status_id=1)
+        add_commit(new_carrinho)
+
+        cliente = Clientes.query.filter_by(id=cliente_id).first()
+        cliente.carrinho_id = new_carrinho.id
+        add_commit(cliente)
+
+        return itens_carrinho
+
+    def check_endereco(endereco_id):
+        if not endereco_id:
+            raise AttributeError(
+                {"Error": "Cliente sem endereco cadastrado, favor cadastrar para concluir a compra."},
+                HTTPStatus.BAD_REQUEST,
+            )
+        return endereco_id 
 
 
