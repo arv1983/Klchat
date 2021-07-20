@@ -8,6 +8,7 @@ from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
 from datetime import datetime
+from ipdb import set_trace
 
 
 bp = Blueprint("carrinho_route", __name__)
@@ -151,6 +152,7 @@ def home():
         carrinho_id = cliente.carrinho_id
         endereco_id = ValidatorCarrinho.check_endereco(cliente.endereco_id)
         itens_compra = ValidatorCarrinho.finish_cart(carrinho_id, cliente.id)
+        carrinho = Carrinho_Produto.query.filter_by(carrinho_id = carrinho_id).first()
         valor_total = 0
 
         for item in itens_compra:
@@ -165,12 +167,13 @@ def home():
             "endereco_entrega_id": endereco_id,
             "status_id": 2,
             "carrinho_id": carrinho_id,
+            "lojista_id": carrinho.lojista_id
         }
 
         nova_venda = Vendas(**venda)
         add_commit(nova_venda)
 
-        return jsonify(nova_venda), HTTPStatus.OK
+        return jsonify(nova_venda.serialized), HTTPStatus.OK
 
     except AttributeError as err:
         return err.args
