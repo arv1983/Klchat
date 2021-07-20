@@ -5,12 +5,13 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.configs.database import db
 
+
 @dataclass
 class Lojistas(db.Model):
     id: int
     nome: str
     email: str
-    senha: str
+    # senha: str
     cnpj: str
     telefone: str
     endereco_id: int
@@ -28,12 +29,23 @@ class Lojistas(db.Model):
     lojista_endereco = relationship("Endereco", backref=backref("endereco_lojista"))
 
     @property
+    def serialized(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "email": self.email,
+            "telefone": self.telefone,
+            "cnpj": self.cnpj,
+            "enderco_id": self.endereco_id,
+        }
+
+    @property
     def password(self):
         return {"Error password cannot be accessed"}
+
     @password.setter
     def password(self, password):
         self.senha = generate_password_hash(password=password, salt_length=10)
 
     def check_password(self, password_compare):
         return check_password_hash(self.senha, password_compare)
-    
