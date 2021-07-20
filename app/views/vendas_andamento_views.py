@@ -12,7 +12,7 @@ from flask import request, Blueprint, jsonify
 
 bp = Blueprint("bp_vendas_andamento", __name__)
 # provisorio
-@bp.route("/vendas-andamento", methods=["GET"])
+@bp.route("/vendas", methods=["GET"])
 @jwt_required()
 def venda():
     
@@ -22,6 +22,10 @@ def venda():
         return {'erro': 'voce não é empresa'}
 
     data = request.get_json()
+
+    
+
+
         
     carrinhos = []
     produtos_lojista = Carrinho_Produto.query.filter_by(lojista_id=query_empresa.id).all()
@@ -32,7 +36,12 @@ def venda():
 
     retorna = []
     for compra in carrinhos:
-        venda = Vendas.query.filter_by(carrinho_id=compra,status_id=data['status']).all()
+        
+        if not data:
+            venda = Vendas.query.filter_by(carrinho_id=compra).all()
+        else:
+            venda = Vendas.query.filter_by(carrinho_id=compra,status_id=data['status']).all()
+
         if venda:
             retorna.append(venda)
             venda = ""
