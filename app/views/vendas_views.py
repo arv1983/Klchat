@@ -85,7 +85,9 @@ def ver_vendas():
             ).all()
 
         if venda:
-            retorna.append(venda)
-            venda = ""
+            for item in venda:
+
+                retorna.append(item.serialized)
+                venda = ""
 
     return jsonify(retorna)
