@@ -32,7 +32,7 @@ class Vendas(db.Model):
     nota_fiscal = Column(String(255))
     cupom_id = Column(Integer, nullable=False, default=0)
     data_venda = Column(Date, nullable=False)
-
+    lojista_id = Column(Integer)
     endereco_entrega_id = Column(Integer, ForeignKey("endereco.id"), nullable=False)
     status_id = Column(Integer, ForeignKey("status.id"), nullable=False)
     carrinho_id = Column(Integer, ForeignKey("carrinho.id"), nullable=False)
@@ -69,7 +69,7 @@ class Vendas(db.Model):
             "valor_total": self.valor_total,
             "nota_fiscal": self.nota_fiscal,
             "data": self.data_venda,
-            "status": status.situacao,
+            "status": status,
             "nome_cliente": cliente.nome,
         }
         endereco_entrega = {
