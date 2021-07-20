@@ -1,7 +1,7 @@
 from app.services.validator_produtos import ValidatorProdutos
 from app.exc import InputError
 from app.services.services import add_commit
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from app.models.produtos_model import Produtos
 from app.models.lojistas_model import Lojistas
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -30,31 +30,22 @@ def create_product():
         "msg": "Cadastro de produto não permitido para este usuário!"
     }, HTTPStatus.BAD_REQUEST
 
-
 @bp.get("/produtos")
-def get_all():
-    produtos = Produtos.query.all()
-    data = [produto.serialized for produto in produtos]
-    return jsonify(data), HTTPStatus.OK
-
-
-@bp.get("/produtos/<int:lojista_id>")
-def get_all_by_lojista_id(lojista_id):
-    produtos = Produtos.query.all()
-
-    data = [
-        produto.serialized for produto in produtos if produto.lojista_id == lojista_id
-    ]
-    return jsonify(data), HTTPStatus.OK
-
-
-@bp.post("/produtos/buscar")
 def search_produto():
-    busca = request.json.get("buscar", None)
+    marca = request.args.get("marca", "")
+    modelo = request.args.get("modelo", "")
+    descricao = request.args.get("descricao", "")
+    minimo = request.args.get("valor_min", 0)
+    maximo = request.args.get("valor_max", 1000000000)
+    lojista = request.args.get("lojista_id", None)
+
     produtos = Produtos.query.filter(
-        Produtos.descricao.like((f"%{busca}%"))
-        | (Produtos.marca.like(f"%{busca}%"))
-        | (Produtos.fabricante.like(f"%{busca}%"))
-    )
+        Produtos.descricao.like(f"%{descricao}%"),
+        Produtos.marca.like(f"%{marca}%"),
+        Produtos.modelo.like(f"%{modelo}%"),
+        Produtos.lojista_id == (lojista) if lojista else Produtos.lojista_id > 0,
+        Produtos.valor_unitario >= minimo,
+        Produtos.valor_unitario <= maximo
+    ).order_by(Produtos.valor_unitario)
     data = [produto.serialized for produto in produtos]
     return jsonify(data), HTTPStatus.OK
