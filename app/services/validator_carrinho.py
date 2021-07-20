@@ -6,8 +6,6 @@ from app.exc import InputError
 from app.models.produtos_model import Produtos
 from http import HTTPStatus
 
-
-
 class ValidatorCarrinho:
 
     def found_product(produto_id: int):
@@ -73,6 +71,14 @@ class ValidatorCarrinho:
             )
         return cliente
 
+    def check_lojista(carrinho_id, lojista_id):
+        produto = Carrinho_Produto.query.filter_by(carrinho_id=carrinho_id).first()
+        if produto and lojista_id != produto.lojista_id:
+            raise AttributeError(
+                {"Error": "Só é permitido inserir produtos de um lojista, finalize ou esvazie o carrinho para inserir este produto."},
+                HTTPStatus.BAD_REQUEST,
+            )
+
     def check_data_edit_cart(data):
         quantidade = data.get("quantidade", None)
         if not data or not quantidade:
@@ -118,6 +124,19 @@ class ValidatorCarrinho:
                 HTTPStatus.BAD_REQUEST,
             )
 
+        for item in itens_carrinho:
+            produto = Produtos.query.filter_by(id=item.produto_id).first()
+            if produto.qtd_estoque < item.quantidade:
+                raise AttributeError(
+                    {"Error": f"A loja não possui esta quantidade de {produto.descricao} no estoque.",
+                    "Recebido": float(item.quantidade),
+                    "Disponível": produto.qtd_estoque
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+            produto.qtd_estoque -= item.quantidade
+            add_commit(produto)
+
         carrinho_atual = Carrinho.query.filter_by(id=carrinho_id).first()
         carrinho_atual.status = 5
         add_commit(carrinho_atual)
@@ -138,5 +157,4 @@ class ValidatorCarrinho:
                 HTTPStatus.BAD_REQUEST,
             )
         return endereco_id 
-
 
