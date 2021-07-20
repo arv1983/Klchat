@@ -76,7 +76,7 @@ def update_produto(produto_id):
         data["qtd_estoque"] = qtd_nova
 
     for item in data:
-        update_item = data[0]
+        update_item = "{{data}:{data[0]}}"
 
         # produto.update()
 
