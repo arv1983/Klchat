@@ -3,6 +3,7 @@ from app.services.validator_vendas import ValidatorVendas
 from app.services.services import add_commit
 from flask import jsonify
 from app.exc import InputError
+from ipdb import set_trace
 
 
 def alterar_venda(venda_id, email, action):
@@ -35,7 +36,7 @@ def ver_venda(venda_id, email, action):
         venda = Vendas.query.filter_by(id=venda_id).first()
         ValidatorVendas.check_venda(venda, lojista.id, action)
         venda = Vendas.query.filter_by(id=venda_id).first()
-        return jsonify(venda)
+        return jsonify(venda.serialized)
     except InputError as err:
         return err.args
 
