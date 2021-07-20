@@ -9,6 +9,7 @@ def init_app(app: Flask):
     from .produtos_views import bp as bp_product
     from .home_view import bp as bp_home
     from .vendas_andamento_views import bp as bp_venda_andamento
+    from .vendas_views import bp as bp_vendas
     app.register_blueprint(bp_product)
     app.register_blueprint(bp_signup)
     app.register_blueprint(bp_login)
@@ -16,4 +17,4 @@ def init_app(app: Flask):
     app.register_blueprint(bp_carrinho)
     app.register_blueprint(bp_home)
     app.register_blueprint(bp_venda_andamento)
-
+    app.register_blueprint(bp_vendas)

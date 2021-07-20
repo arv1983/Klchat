@@ -6,7 +6,6 @@ from app.services.services import add_commit
 from flask import Blueprint,request, jsonify, current_app
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models.clientes_model import Clientes
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
 from datetime import datetime
 
@@ -27,6 +26,7 @@ def inserir_carrinho():
         except:
 
             produto = ValidatorCarrinho.found_product(data.get("produto_id"))
+            ValidatorCarrinho.check_lojista(cliente.carrinho_id, produto.lojista_id)
             ValidatorCarrinho.check_stock(produto, data.get("quantidade", 1))
         
             item = {
@@ -158,7 +158,7 @@ def home():
             "cupom_id": 0,
             "data_venda": data_venda,
             "endereco_entrega_id": endereco_id,
-            "status_id": 1,
+            "status_id": 2,
             "carrinho_id": carrinho_id
         }
         
