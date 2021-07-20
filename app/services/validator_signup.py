@@ -128,21 +128,31 @@ class ValidatorSignup:
                     HTTPStatus.BAD_REQUEST,
                 )
 
+            cli_cpf = None
+            cli_cnpj = None
+            cli_email = None
+
             if _cpf:
                 data["cpf"] = _cpf
+                cli_cpf = Clientes.query.filter_by(cpf=_cpf).first()
             if _cnpj:
                 data["cnpj"] = _cnpj
+                cli_cnpj = Clientes.query.filter_by(cnpj=_cnpj).first()
 
             # email in db
             cli_email = Clientes.query.filter_by(email=data.get("email")).first()
-            cli_cpf = Clientes.query.filter_by(cpf=data.get("cpf")).first()
-            cli_cnpj = Clientes.query.filter_by(cpf=data.get("cpf")).first()
+
+            print("cnpj", cli_cnpj, "cpf", cli_cpf, "email", cli_email)
 
             if cli_email or cli_cpf or cli_cnpj:
                 raise InputError(
                     {
-                        "Error": "Email ou cpf já cadastrado",
-                        "recebido": {"cnpj": _cpf, "email": data.get("email")},
+                        "Error": "Email, cpf ou cnpj já cadastrado",
+                        "recebido": {
+                            "email": cli_email,
+                            "cpf": cli_cpf,
+                            "cnpj": cli_cnpj,
+                        },
                     },
                     HTTPStatus.BAD_REQUEST,
                 )
