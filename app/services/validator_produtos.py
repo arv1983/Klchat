@@ -11,7 +11,6 @@ class ValidatorProdutos:
         "modelo",
         "qtd_estoque",
         "valor_unitario",
-        "lojista_id",
         "categoria_id",
     ]
 

@@ -22,12 +22,11 @@ def create_product():
 
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     if lojista:
-        data = request.get_json()
         data["lojista_id"] = lojista.id
         add_commit(Produtos(**data))
         return data, HTTPStatus.CREATED
     return {
-        "msg": "Cadastro de produto não permitido para este usuário!"
+        "msg": "Cadastro de produto não permitido para este tipo de usuário!"
     }, HTTPStatus.BAD_REQUEST
 
 
@@ -54,7 +53,31 @@ def search_produto():
     produtos = Produtos.query.filter(
         Produtos.descricao.like((f"%{busca}%"))
         | (Produtos.marca.like(f"%{busca}%"))
-        | (Produtos.fabricante.like(f"%{busca}%"))
+        | (Produtos.modelo.like(f"%{busca}%"))
     )
     data = [produto.serialized for produto in produtos]
     return jsonify(data), HTTPStatus.OK
+
+
+@bp.patch("/produtos/<int:produto_id>")
+def update_produto(produto_id):
+    produto: Produtos
+
+    produto = Produtos.query.filter_by(id=produto_id).first()
+
+    data = request.get_json()
+
+    if not produto:
+        return {"Error": "Produto não encontrado"}, HTTPStatus.NOT_FOUND
+
+    print("----", produto)
+    if data.get("qtd_estoque"):
+        qtd_nova = produto.qtd_estoque + float(data.get("qtd_estoque"))
+        data["qtd_estoque"] = qtd_nova
+
+    for item in data:
+        update_item = data[0]
+
+        # produto.update()
+
+    return {"Atualizado": update_item}, HTTPStatus.OK
