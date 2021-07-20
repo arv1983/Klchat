@@ -1,3 +1,4 @@
+from app.models.vendas_model import Vendas
 from app.exc import InputError
 from app.services.validator_carrinho import ValidatorCarrinho
 from app.models.produtos_model import Produtos
@@ -7,7 +8,7 @@ from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.clientes_model import Clientes
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
-from datetime import date
+from datetime import datetime
 
 
 bp = Blueprint("carrinho_route", __name__)
@@ -33,7 +34,7 @@ def inserir_carrinho():
             "quantidade": data.get("quantidade", 1),
             "carrinho_id": cliente.carrinho_id,
             "lojista_id": produto.lojista_id,
-            "data_prod_inserida": date.today()
+            "data_prod_inserida": datetime.now()
             }
 
             itens_carrinho = Carrinho_Produto(**item)
@@ -134,3 +135,40 @@ def esvaziar_carrinho():
         return err.args
 
     return {}, HTTPStatus.NO_CONTENT
+
+
+@bp.get("/finalizar-carrinho")
+@jwt_required()
+def home():
+
+    try:
+        cliente = ValidatorCarrinho.check_client(get_jwt_identity())
+        carrinho_id = cliente.carrinho_id
+        endereco_id = ValidatorCarrinho.check_endereco(cliente.endereco_id)
+        itens_compra = ValidatorCarrinho.finish_cart(carrinho_id, cliente.id)
+        valor_total = 0
+        
+        for item in itens_compra:
+            produto_atual = Produtos.query.filter_by(id=item.produto_id).first()
+            valor_total += produto_atual.valor_unitario
+        
+        data_venda = datetime.now()
+        venda = {
+            "valor_total": valor_total,
+            "cupom_id": 0,
+            "data_venda": data_venda,
+            "endereco_entrega_id": endereco_id,
+            "status_id": 1,
+            "carrinho_id": carrinho_id
+        }
+        
+        nova_venda = Vendas(**venda)
+        add_commit(nova_venda)
+
+        return jsonify(nova_venda), HTTPStatus.OK
+
+
+    except AttributeError as err:
+        return err.args
+    except InputError as err:
+        return err.args
