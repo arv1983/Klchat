@@ -136,13 +136,17 @@ class ValidatorSignup:
             # email in db
             cli_email = Clientes.query.filter_by(email=data.get("email")).first()
             cli_cpf = Clientes.query.filter_by(cpf=data.get("cpf")).first()
-            cli_cnpj = Clientes.query.filter_by(cpf=data.get("cpf")).first()
+            cli_cnpj = Clientes.query.filter_by(cpf=data.get("cnpj")).first()
 
             if cli_email or cli_cpf or cli_cnpj:
                 raise InputError(
                     {
-                        "Error": "Email ou cpf já cadastrado",
-                        "recebido": {"cnpj": _cpf, "email": data.get("email")},
+                        "Error": "Email, cpf ou cnpj já cadastrado",
+                        "recebido": {
+                            "email": cli_email("email"),
+                            "cpf": cli_cpf,
+                            "cnpj": cli_cnpj,
+                        },
                     },
                     HTTPStatus.BAD_REQUEST,
                 )
