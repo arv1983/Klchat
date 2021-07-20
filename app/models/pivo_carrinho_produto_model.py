@@ -22,7 +22,10 @@ class Carrinho_Produto(db.Model):
     data_prod_inserida = Column(Date, nullable=False)
 
     produto_id = Column(Integer, ForeignKey("produtos.id"), nullable=False)
+    lojista_id = Column(Integer)
     carrinho_id = Column(Integer, ForeignKey("carrinho.id"), nullable=False)
+    lojista_id = Column(Integer, nullable=False)
+
 
     pivo_produto = relationship("Produtos", backref=backref("produto_pivo"))
     pivo_carrinho = relationship("Carrinho", backref=backref("carrinho_pivo"))
