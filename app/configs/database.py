@@ -3,6 +3,7 @@ from flask import Flask
 
 db = SQLAlchemy()
 
+
 def init_app(app: Flask):
     db.init_app(app)
     app.db = db

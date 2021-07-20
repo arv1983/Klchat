@@ -5,11 +5,12 @@ def init_app(app: Flask):
     from .signup_views import bp as bp_signup
     from .perfil_cliente import bp as bp_perfil
     from .login_views import bp as bp_login
-    from .carrinho_views import bp as bp_carrinho 
+    from .carrinho_views import bp as bp_carrinho
     from .produtos_views import bp as bp_product
     from .home_view import bp as bp_home
     from .vendas_andamento_views import bp as bp_venda_andamento
     from .vendas_views import bp as bp_vendas
+
     app.register_blueprint(bp_product)
     app.register_blueprint(bp_signup)
     app.register_blueprint(bp_login)

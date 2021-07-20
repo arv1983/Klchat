@@ -9,8 +9,8 @@ class Categorias(db.Model):
     id: int
     descricao: str
 
-    __tablename__="categorias"
-    
+    __tablename__ = "categorias"
+
     id = Column(Integer, primary_key=True)
 
     descricao = Column(String(255), nullable=False)

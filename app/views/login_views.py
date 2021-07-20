@@ -1,11 +1,12 @@
-from flask import Blueprint,request, jsonify
+from flask import Blueprint, request, jsonify
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token
 from app.models.clientes_model import Clientes
 from app.models.lojistas_model import Lojistas
 
 
-bp= Blueprint("login_route", __name__)
+bp = Blueprint("login_route", __name__)
+
 
 @bp.route("/login", methods=["POST"])
 def login():
@@ -14,7 +15,7 @@ def login():
     senha = request.json.get("senha", None)
     cliente = Clientes.query.filter_by(email=email).first()
     lojista = Lojistas.query.filter_by(email=email).first()
-    msg="Usuário não encontrado"
+    msg = "Usuário não encontrado"
     if cliente:
         user = cliente
     elif lojista:

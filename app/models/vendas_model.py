@@ -31,8 +31,6 @@ class Vendas(db.Model):
     status_id = Column(Integer, ForeignKey("status.id"), nullable=False)
     carrinho_id = Column(Integer, ForeignKey("carrinho.id"), nullable=False)
 
-    venda_status = relationship("Status", backref=backref("status_venda")) 
+    venda_status = relationship("Status", backref=backref("status_venda"))
     venda_endereco = relationship("Endereco", backref=backref("endereco_venda"))
     venda_carrinho = relationship("Carrinho", backref=backref("carrinho_venda"))
-
-    
