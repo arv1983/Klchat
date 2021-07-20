@@ -15,14 +15,25 @@ bp = Blueprint("bp_vendas_andamento", __name__)
 @bp.route("/vendas-andamento", methods=["GET"])
 @jwt_required()
 def venda():
+    data = request.get_json()
     
+    print(data)
+
+    if data:
+        possible_vars = ["status"]
+        if not all(name in possible_vars for name in data.keys()):
+            keys_w = {value for value in data.keys() if not value in possible_vars}
+            return {"available_keys": possible_vars, "wrong_keys_sended": list(keys_w)},422
+        if data['status'] not in range(0, 6):
+            return {"Valor do status deve ser": "1 a 5"},422
+
     query_empresa = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     
     if not query_empresa:
-        return {'erro': 'voce não é empresa'}
+        return {'erro': 'voce não é empresa'},401
 
-    data = request.get_json()
-        
+
+
     carrinhos = []
     produtos_lojista = Carrinho_Produto.query.filter_by(lojista_id=query_empresa.id).all()
 
@@ -32,7 +43,12 @@ def venda():
 
     retorna = []
     for compra in carrinhos:
-        venda = Vendas.query.filter_by(carrinho_id=compra,status_id=data['status']).all()
+        
+        if not data:
+            venda = Vendas.query.filter_by(carrinho_id=compra).all()
+        else:
+            venda = Vendas.query.filter_by(carrinho_id=compra,status_id=data['status']).all()
+
         if venda:
             retorna.append(venda)
             venda = ""
@@ -46,7 +62,7 @@ def compra():
     query_cliente = Clientes.query.filter_by(email=get_jwt_identity()).first()
 
     if not query_cliente:
-        return {'erro': 'Essa rota é pra cliente'}
+        return {'erro': 'Essa rota é pra cliente'},401
     query_carrinho = Carrinho.query.filter_by(cliente_id=query_cliente.id).all()
         # query_vendas = Vendas.query.filter_by(carrinho_id=query_carrinho.id).first()
 
