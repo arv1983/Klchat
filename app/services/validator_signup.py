@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+from sqlalchemy.sql.elements import Null
+
 from app.exc import InputError
 
 from app.services.regex import ValidatorRegex
@@ -149,9 +151,9 @@ class ValidatorSignup:
                     {
                         "Error": "Email, cpf ou cnpj já cadastrado",
                         "recebido": {
-                            "email": cli_email,
-                            "cpf": cli_cpf,
-                            "cnpj": cli_cnpj,
+                            "email": data.get("email", None),
+                            "cpf": data.get("cpf", None),
+                            "cnpj": data.get("cnpj", None),
                         },
                     },
                     HTTPStatus.BAD_REQUEST,

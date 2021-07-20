@@ -1,5 +1,6 @@
 from flask import json
 import pytest
+import ipdb
 
 from app import create_app
 from app.services.gerator_data import GeratorData
@@ -15,41 +16,41 @@ def signup():
         yield client
 
 
-# def test_signup_cliente_cpf(signup):
+def test_signup_cliente_cpf(signup):
 
-#     """
-#     Teste Cliente PF
-#     """
+    """
+    Teste Create Cliente PF
+    """
 
-#     ger = GeratorData()
-#     val = ValidatorRegex()
-#     data = ger.create_client_cpf()
-#     url = "/signup"
+    ger = GeratorData()
+    val = ValidatorRegex()
+    data = ger.create_client_cpf()
+    url = "/signup"
 
-#     response = signup.post(url, json=data)
+    response = signup.post(url, json=data)
 
-#     res = response.get_json()
+    res = response.get_json()
 
-#     data["cpf"] = val.cpf(data.get("cpf"))
-#     data["telefone"] = val.telefone(data.get("telefone"))
+    data["cpf"] = val.cpf(data.get("cpf"))
+    data["telefone"] = val.telefone(data.get("telefone"))
 
-#     except_dict = {
-#         "id": res.get("id"),
-#         "nome": data.get("nome"),
-#         "email": data.get("email"),
-#         "cpf": data.get("cpf"),
-#         "cnpj": None,
-#         "telefone": data.get("telefone"),
-#         "endereco_id": None,
-#     }
-#     assert type(response.get_json()) == dict
-#     assert response.get_json() == except_dict
-#     assert response.status_code == 201
+    except_dict = {
+        "id": res.get("id"),
+        "nome": data.get("nome"),
+        "email": data.get("email"),
+        "cpf": data.get("cpf"),
+        "cnpj": None,
+        "telefone": data.get("telefone"),
+        "endereco_id": None,
+    }
+    assert type(response.get_json()) == dict
+    assert response.get_json() == except_dict
+    assert response.status_code == 201
 
 
 def test_signup_cliente_cnpj(signup):
     """
-    Teste Cliente PJ
+    Teste Create Cliente PJ
     """
     ger = GeratorData()
     val = ValidatorRegex()
@@ -61,7 +62,7 @@ def test_signup_cliente_cnpj(signup):
     res = response.get_json()
 
     data["cnpj"] = val.cnpj(data.get("cnpj"))
-    print("=-=-=-=", data["cnpj"])
+
     data["telefone"] = val.telefone(data.get("telefone"))
 
     except_dict = {
@@ -76,3 +77,54 @@ def test_signup_cliente_cnpj(signup):
     assert type(response.get_json()) == dict
     assert response.get_json() == except_dict
     assert response.status_code == 201
+
+
+def test_signup_lojista(signup):
+    """
+    Teste create Lojista
+    """
+    ger = GeratorData()
+    val = ValidatorRegex()
+    data = ger.create_client_cnpj()
+    url = "/signup"
+
+    response = signup.post(url, json=data)
+
+    res = response.get_json()
+
+    data["cnpj"] = val.cnpj(data.get("cnpj"))
+
+    data["telefone"] = val.telefone(data.get("telefone"))
+
+    except_dict = {
+        "id": res.get("id"),
+        "nome": data.get("nome"),
+        "email": data.get("email"),
+        "cnpj": data.get("cnpj"),
+        "cpf": None,
+        "telefone": data.get("telefone"),
+        "endereco_id": None,
+    }
+    assert type(response.get_json()) == dict
+    assert response.get_json() == except_dict
+    assert response.status_code == 201
+
+
+def test_signup_dados_faltantes(signup):
+    """
+    Teste Cliente - dados faltantes
+    """
+    data = dict(tipo_usuario="cliente")
+
+    url = "/signup"
+    response = signup.post(url, json=data)
+
+    except_dict = {
+        "Error": "Faltam campos obrigatórios",
+        "recebido": ["tipo_usuario"],
+        "faltante": ["nome", "email", "senha", "telefone"],
+    }
+
+    assert type(response.get_json()) == dict
+    assert response.get_json() == except_dict
+    assert response.status_code == 400
