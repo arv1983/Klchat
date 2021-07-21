@@ -112,7 +112,7 @@ def test_signup_lojista(signup):
 
 def test_signup_dados_faltantes(signup):
     """
-    Teste Cliente - dados faltantes
+    Teste Cliente - dados faltantes.
     """
     data = dict(tipo_usuario="cliente")
 
