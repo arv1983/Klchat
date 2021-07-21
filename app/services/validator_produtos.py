@@ -42,7 +42,7 @@ class ValidatorProdutos:
         if not categoria:
             raise InputError(
             {"Error": "Categoria não encontrada, consulte o endpoint /categorias."},
-            HTTPStatus.BAD_REQUEST,
+            HTTPStatus.NOT_FOUND,
         )
 
         if produto:
