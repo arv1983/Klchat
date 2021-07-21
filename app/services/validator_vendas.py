@@ -53,7 +53,7 @@ class ValidatorVendas:
         if not venda:
             raise AttributeError(
                 {"Error": "Venda não encontrada."},
-                HTTPStatus.BAD_REQUEST,
+                HTTPStatus.NOT_FOUND,
             )
 
         itens_carrinho = Carrinho_Produto.query.filter_by(

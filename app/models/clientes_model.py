@@ -52,9 +52,10 @@ class Clientes(db.Model):
             "nome": self.nome,
             "email": self.email,
             "telefone": self.telefone,
-            "endereco_id": self.endereco_id,
             "carrinho_id": self.carrinho_id,
         }
+        if self.endereco_id:
+            data["endereco_id"] = self.endereco_id
         if self.cnpj:
             data["cnpj"] = self.cnpj
         if self.cpf:
