@@ -3,7 +3,7 @@ from flask import Flask
 
 def init_app(app: Flask):
     from .signup_views import bp as bp_signup
-    from .endereco_view import bp as bp_perfil
+    from .endereco_view import bp as bp_endereco
     from .login_views import bp as bp_login
     from .carrinho_views import bp as bp_carrinho
     from .produtos_views import bp as bp_product
@@ -16,7 +16,7 @@ def init_app(app: Flask):
     app.register_blueprint(bp_product)
     app.register_blueprint(bp_signup)
     app.register_blueprint(bp_login)
-    app.register_blueprint(bp_perfil)
+    app.register_blueprint(bp_endereco)
     app.register_blueprint(bp_carrinho)
     app.register_blueprint(bp_home)
     app.register_blueprint(bp_vendas)
