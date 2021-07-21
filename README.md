@@ -341,10 +341,10 @@ Cadastro de produto associado ao lojista.
 |:---------: |:---------: |:---------:|
 |`/produto`   |`Post`	  |	`200 - 400`	|
 
-*Obs: `?` concatenar rota com parametros.*
+>Obs: `?` concatenar rota com parametros.
 Ex: `/produto?lojista_id=3`
 
-*Obs: `&` concatenar entre um parametros e outro.*
+>Obs: `&` concatenar entre um parametros e outro.
 Ex: `/produto?marca=Philips&lojista_id=3`
 
 **Body** - `Param`
@@ -427,13 +427,11 @@ Ex: `/produto?marca=Philips&lojista_id=3`
 * ### Vendas
 Gera um o inicio de uma venda e altera o status o status do carrinho para finalizado.
 
-- Ver vendas
-
-
+- Ver vendas Id
 
 |url       | metodo   | status  |
 |:---------: |:---------: |:---------:|
-|`/vendas-andamento`   |`Get`	  |	`200 - 400`	|
+|`/vendas/id`   |`Get`	  |	`200 - 400`	|
 
 *Authorization*
 ~~~
@@ -444,6 +442,43 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 **Response** - `json`
 
 ~~~
+{
+  "venda_id": 12,
+  "valor_total": 3000.0,
+  "nota_fiscal": null,
+  "data": "Tue, 20 Jul 2021 00:00:00 GMT",
+  "status": {
+    "id": 4,
+    "situacao": "Despachado"
+  },
+  "nome_cliente": "frank",
+  "cpf_cliente": "88888888833",
+  "endereco_entrega": {
+    "Logradouro": "Av. Pompal",
+    "Numero": "1529",
+    "Bairro": "Manaíra",
+    "Complemento": "Apt Yyy",
+    "Cidade": "João Pessoa",
+    "Estado": "PB",
+    "CEP": "58038242"
+  },
+  "produtos": [
+    {
+      "id": 1,
+      "descricao": "Mesinha",
+      "marca": "Granejeira",
+      "quantidade": 1.0,
+      "valor_unitario": 0.0
+    },
+    {
+      "id": 2,
+      "descricao": "Caneta Governamental",
+      "marca": "Laranja",
+      "quantidade": 1.0,
+      "valor_unitario": 3000.0
+    }
+  ]
+}
 ~~~
 
 - Ver vendas
@@ -451,10 +486,38 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 |url       | metodo   | status  |
 |:---------: |:---------: |:---------:|
 |`/vendas/id`   |`Get`	  |	`200 - 400`	|
+|`/vendas?status=APROVADO`   |`Get`	  |	`200 - 400`	|
 
-**Response** - `json`
+**Response** - `json - param`
+~~~
+status=APROVADO
+~~~
 
 ~~~
+[
+  {
+    "venda_id": 6,
+    "valor_total": 12.0,
+    "nota_fiscal": "[NULL]",
+    "data": "Thu, 07 Apr 2022 00:00:00 GMT",
+    "status": {
+      "id": 1,
+      "situacao": "Em aberto"
+    },
+    "nome_cliente": "Zezinho",
+    "cnpj_cliente": "123456789",
+    "endereco_entrega": {
+      "Logradouro": "Av. Pompal",
+      "Numero": "1529",
+      "Bairro": "Manaíra",
+      "Complemento": "apt xx",
+      "Cidade": "João Pessoa",
+      "Estado": "PB",
+      "CEP": "58038242"
+    },
+    "produtos": []
+  }
+]
 ~~~
 
 - Cancelar venda
@@ -467,6 +530,30 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 **Response** - `json`
 
 ~~~
+[
+  {
+    "venda_id": 6,
+    "valor_total": 12.0,
+    "nota_fiscal": "[NULL]",
+    "data": "Thu, 07 Apr 2022 00:00:00 GMT",
+    "status": {
+      "id": 1,
+      "situacao": "Cancelado"
+    },
+    "nome_cliente": "Zezinho",
+    "cnpj_cliente": "123456789",
+    "endereco_entrega": {
+      "Logradouro": "Av. Pompal",
+      "Numero": "1529",
+      "Bairro": "Manaíra",
+      "Complemento": "apt xx",
+      "Cidade": "João Pessoa",
+      "Estado": "PB",
+      "CEP": "58038242"
+    },
+    "produtos": []
+  }
+]
 ~~~
 
 - Despachar produto
@@ -479,6 +566,30 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 **Response** - `json`
 
 ~~~
+[
+  {
+    "venda_id": 6,
+    "valor_total": 12.0,
+    "nota_fiscal": "[NULL]",
+    "data": "Thu, 07 Apr 2022 00:00:00 GMT",
+    "status": {
+      "id": 1,
+      "situacao": "Despachado"
+    },
+    "nome_cliente": "Zezinho",
+    "cnpj_cliente": "123456789",
+    "endereco_entrega": {
+      "Logradouro": "Av. Pompal",
+      "Numero": "1529",
+      "Bairro": "Manaíra",
+      "Complemento": "apt xx",
+      "Cidade": "João Pessoa",
+      "Estado": "PB",
+      "CEP": "58038242"
+    },
+    "produtos": []
+  }
+]
 ~~~
 
 - Aprovar venda
@@ -491,4 +602,50 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 **Response** - `json`
 
 ~~~
+[
+  {
+    "venda_id": 6,
+    "valor_total": 12.0,
+    "nota_fiscal": "[NULL]",
+    "data": "Thu, 07 Apr 2022 00:00:00 GMT",
+    "status": {
+      "id": 1,
+      "situacao": "Aprovado"
+    },
+    "nome_cliente": "Zezinho",
+    "cnpj_cliente": "123456789",
+    "endereco_entrega": {
+      "Logradouro": "Av. Pompal",
+      "Numero": "1529",
+      "Bairro": "Manaíra",
+      "Complemento": "apt xx",
+      "Cidade": "João Pessoa",
+      "Estado": "PB",
+      "CEP": "58038242"
+    },
+    "produtos": []
+  }
+]
 ~~~
+
+---
+
+* ### Status
+
+| Situações | Id |
+| :---: | :---: |
+| Em Aberto| 1|
+| Aguardando Pagamento| 2 |
+| Aprovado| 3|
+| Despachado| 4|
+| Cancelado| 5|
+
+
+> obs: Venda so pode ser cancelada em situação "Em Aberto - Aguardando Pagamento"
+
+---
+
+* ### Categorias
+| Situações | Id |
+| :---: | :---: |
+|teste|1|
