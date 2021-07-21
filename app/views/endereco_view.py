@@ -14,12 +14,12 @@ from app.models.endereco_model import Endereco
 from app.models.lojistas_model import Lojistas
 
 
-bp = Blueprint("bp_perfil", __name__)
+bp = Blueprint("bp_endereco", __name__)
 
 
-@bp.route("/perfil", methods=["POST", "GET", "PUT"])
+@bp.route("/endereco", methods=["POST", "GET", "PUT"])
 @jwt_required()
-def perfil():
+def criar_endereco():
     data = request.get_json()
 
     cliente = Clientes.query.filter_by(email=get_jwt_identity()).first()

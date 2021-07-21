@@ -17,7 +17,6 @@ bp = Blueprint("carrinho_route", __name__)
 @bp.post("/carrinho")
 @jwt_required()
 def inserir_carrinho():
-
     try:
         cliente = ValidatorCarrinho.check_client(get_jwt_identity())
         data = ValidatorCarrinho.verify_request_data(request.get_json())
@@ -52,7 +51,6 @@ def inserir_carrinho():
 
     except AttributeError as err:
         return err.args
-
 
 @bp.get("/carrinho")
 @jwt_required()

@@ -1,5 +1,6 @@
 # klchat
 
+<<<<<<< HEAD
 #### Plataforma de venda online, com interação em tempo real entre cliente e vendendor.
 
 #
@@ -13,6 +14,15 @@ api: https://klchat.herokuapp.com
 1. Signup
     - Cliente
     - Lojista
+=======
+#### Plataforma de venda online, com interação em tempo real entre cliente e vendendor
+
+### End-Points
+
+1. Signup
+    1.1 Cliente
+    1.2 Lojista
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
 2. Login
 3. Enderecos
 4. Carrinho
@@ -21,18 +31,24 @@ api: https://klchat.herokuapp.com
 7. Vendas
 8. Status
 
+<<<<<<< HEAD
 ---
+=======
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
 * ### Signup
 
 Cadastro de cliente podendo ser Pessoa Fisica, Pessoa Juridica é Lojista (quem vai fornecer os produtos na plataforma).
 
 **Clientes CPF**
+<<<<<<< HEAD
 
 |url       | metodo   | status  |
 |:---------: |:---------: |:---------:|
 |`/signup`   |`Post`  |	`200 - 400`	|
 
 **Body** - `json`
+=======
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
 ~~~
 {
 	"tipo_usuario": "cliente",
@@ -43,6 +59,7 @@ Cadastro de cliente podendo ser Pessoa Fisica, Pessoa Juridica é Lojista (quem 
 	"telefone": "33111111111"
 }
 ~~~
+<<<<<<< HEAD
 **Response** - `json`
 ~~~
 {
@@ -64,10 +81,22 @@ Cadastro de cliente podendo ser Pessoa Fisica, Pessoa Juridica é Lojista (quem 
 	"email": "alfaiate@luxo.com",
 	"senha": "bruno",
 	"cnpj": "92795487000164",
+=======
+
+**Clientes CNPJ**
+~~~
+{
+	"tipo_usuario": "cliente",
+	"nome": "bruno",
+	"email": "bruno@bruno.com",
+	"senha": "bruno",
+	"cnpj": "90860559000184",
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
 	"telefone": "33111111111"
 }
 ~~~
 
+<<<<<<< HEAD
 **Response** - `json`
 ~~~
 {
@@ -121,12 +150,18 @@ Gera um token de acesso.
 |`/login`   |`Post`	  |	`200 - 400`	|
 
 **Body** - `json`
+=======
+* ### Login
+Gera um token de acesso.
+
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
 ~~~
 {
 	"email": "bruno@bruno.com",
 	"senha": "bruno"
 }
 ~~~
+<<<<<<< HEAD
 **Response** - `json`
 ~~~
 {
@@ -331,10 +366,26 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjcxNjU4Niw
 ~~~
 
 ---
+=======
+
+* ### Enderecos
+Cadastrar um endereço.
+
+~~~
+~~~
+
+* ### Carinho
+Armazena os produtos disponiveis em estoque para gerar uma venda.
+
+~~~
+~~~
+
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
 
 * ### Produto
 Cadastro de produto associado ao lojista.
 
+<<<<<<< HEAD
 - Buscar produto
 
 |url       | metodo   | status  |
@@ -649,3 +700,38 @@ status=APROVADO
 | Situações | Id |
 | :---: | :---: |
 |teste|1|
+=======
+~~~
+{
+	"descricao": "cacetinho de chocolate",
+	"marca": "padaria A",
+	"modelo": "brioche MG",
+	"qtd_estoque": 100,
+	"lojista_id": 1,
+	"valor_unitario": 10.20
+}
+~~~
+
+
+* ### Categorias
+Categorais Produtos.
+
+
+~~~
+~~~
+
+
+* ### Vendas
+Gera um o inicio de uma venda e altera o status o status do carrinho para finalizado.
+
+
+~~~
+~~~
+
+
+* ### Status
+Situações da venda e do carrinho.
+
+~~~
+~~~
+>>>>>>> 86edf78c7cd2d831ccbd26a2f663a38c4fe919a5
