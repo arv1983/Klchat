@@ -10,20 +10,21 @@ from app.models.produtos_model import Produtos
 from http import HTTPStatus
 from ipdb import set_trace
 
-class ValidatorVendas:
 
+class ValidatorVendas:
     def check_stock(carrinho_id):
         itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id=carrinho_id).all()
         for item in itens_carrinho:
             produto = Produtos.query.filter_by(id=item.produto_id).first()
             if produto.qtd_estoque < item.quantidade:
                 raise AttributeError(
-                    {"Error": f"A loja não possui esta quantidade de {produto.descricao} no estoque.",
-                    "Recebido": float(item.quantidade),
-                    "Disponível": produto.qtd_estoque
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
+                    {
+                        "Error": f"A loja não possui esta quantidade de {produto.descricao} no estoque.",
+                        "Recebido": float(item.quantidade),
+                        "Disponível": produto.qtd_estoque,
+                    },
+                    HTTPStatus.BAD_REQUEST,
+                )
             produto.qtd_estoque -= item.quantidade
             add_commit(produto)
 
@@ -38,7 +39,16 @@ class ValidatorVendas:
 
         return lojista
 
-    def check_venda(venda, lojista_id):
+    def check_venda(venda, lojista_id, action):
+
+        if action == "cancelar":
+            text = "cancelada"
+        elif action == "aprovar":
+            text = "aprovada"
+        elif action == "despachar":
+            text = "despachada"
+        else:
+            text = None
 
         if not venda:
             raise AttributeError(
@@ -46,21 +56,27 @@ class ValidatorVendas:
                 HTTPStatus.BAD_REQUEST,
             )
 
-        itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id = venda.carrinho_id).first()
+        itens_carrinho = Carrinho_Produto.query.filter_by(
+            carrinho_id=venda.carrinho_id
+        ).first()
 
         if itens_carrinho.lojista_id != lojista_id:
             raise AttributeError(
                 {"Error": "Venda não pertence a esta loja."},
                 HTTPStatus.BAD_REQUEST,
             )
-            
-        if venda.status_id != 2:
+
+        if (
+            (action == "aprovar" or action == "cancelar") and (venda.status_id != 2)
+        ) or ((action == "despachar") and (venda.status_id != 3)):
             status = Status.query.filter_by(id=venda.status_id).first()
             raise AttributeError(
-                {"Error": "Esta venda não pode ser aprovada.", "status_atual": {"situação": status.situacao}},
+                {
+                    "Error": f"Esta venda não pode ser {text}.",
+                    "status_atual": {"situação": status.situacao},
+                },
                 HTTPStatus.BAD_REQUEST,
             )
-
 
     def finish_cart(carrinho_id, cliente_id):
         itens_carrinho = Carrinho_Produto.query.filter_by(carrinho_id=carrinho_id).all()
@@ -82,4 +98,3 @@ class ValidatorVendas:
         add_commit(cliente)
 
         return itens_carrinho
-

@@ -6,8 +6,8 @@ from app.exc import InputError
 from app.models.produtos_model import Produtos
 from http import HTTPStatus
 
-class ValidatorCarrinho:
 
+class ValidatorCarrinho:
     def found_product(produto_id: int):
         produto = Produtos.query.filter_by(id=produto_id).first()
         if not produto:
@@ -20,28 +20,29 @@ class ValidatorCarrinho:
     def verify_request_data(data: dict) -> dict:
         if not data or not data.get("produto_id", None):
             raise InputError(
-                {"Error": "Request faltando dados obrigatórios.", 
-                "Obrigatórios": {"produto_id": "Um valor do tipo inteiro."},
-                "Opcionais": {"quantidade": "Um valor do tipo inteiro ou float."}},
+                {
+                    "Error": "Request faltando dados obrigatórios.",
+                    "Obrigatórios": {"produto_id": "Um valor do tipo inteiro."},
+                    "Opcionais": {"quantidade": "Um valor do tipo inteiro ou float."},
+                },
                 HTTPStatus.BAD_REQUEST,
             )
-        
+
         id = data.get("produto_id")
-        quantidade = data.get("quantidade",1)
+        quantidade = data.get("quantidade", 1)
 
         try:
-            data = {
-                "produto_id": int(id),
-                "quantidade": float(quantidade)
-            }
+            data = {"produto_id": int(id), "quantidade": float(quantidade)}
         except:
             raise InputError(
-                {"Error": "Valor informado é inválido.", 
-                "Recebido": data,
-                "Esperado": {
-                    "produto_id": "Um valor do tipo inteiro.",
-                    "quantidade": "Um valor do tipo inteiro ou float."
-                    }},
+                {
+                    "Error": "Valor informado é inválido.",
+                    "Recebido": data,
+                    "Esperado": {
+                        "produto_id": "Um valor do tipo inteiro.",
+                        "quantidade": "Um valor do tipo inteiro ou float.",
+                    },
+                },
                 HTTPStatus.BAD_REQUEST,
             )
 
@@ -55,9 +56,10 @@ class ValidatorCarrinho:
             )
         if produto.qtd_estoque < quantidade:
             raise AttributeError(
-                {"Error": "A loja não possui esta quantidade no estoque.",
-                "Recebido": float(quantidade),
-                "Disponível": produto.qtd_estoque
+                {
+                    "Error": "A loja não possui esta quantidade no estoque.",
+                    "Recebido": float(quantidade),
+                    "Disponível": produto.qtd_estoque,
                 },
                 HTTPStatus.BAD_REQUEST,
             )
@@ -75,7 +77,9 @@ class ValidatorCarrinho:
         produto = Carrinho_Produto.query.filter_by(carrinho_id=carrinho_id).first()
         if produto and lojista_id != produto.lojista_id:
             raise AttributeError(
-                {"Error": "Só é permitido inserir produtos de um lojista, finalize ou esvazie o carrinho para inserir este produto."},
+                {
+                    "Error": "Só é permitido inserir produtos de um lojista, finalize ou esvazie o carrinho para inserir este produto."
+                },
                 HTTPStatus.BAD_REQUEST,
             )
 
@@ -83,22 +87,24 @@ class ValidatorCarrinho:
         quantidade = data.get("quantidade", None)
         if not data or not quantidade:
             raise InputError(
-                {"Error": "Request faltando dados obrigatórios.", 
-                "Obrigatórios": {"quantidade": "Um valor do tipo inteiro ou float."}},
+                {
+                    "Error": "Request faltando dados obrigatórios.",
+                    "Obrigatórios": {
+                        "quantidade": "Um valor do tipo inteiro ou float."
+                    },
+                },
                 HTTPStatus.BAD_REQUEST,
             )
 
         try:
-            data = {
-                "quantidade": float(quantidade)
-            }
+            data = {"quantidade": float(quantidade)}
         except:
             raise InputError(
-                {"Error": "Valor informado é inválido.", 
-                "Recebido": data,
-                "Esperado": {
-                    "quantidade": "Um valor do tipo inteiro ou float."
-                    }},
+                {
+                    "Error": "Valor informado é inválido.",
+                    "Recebido": data,
+                    "Esperado": {"quantidade": "Um valor do tipo inteiro ou float."},
+                },
                 HTTPStatus.BAD_REQUEST,
             )
 
@@ -106,8 +112,7 @@ class ValidatorCarrinho:
 
     def check_prod_in_cart(carrinho_id, produto_id):
         produto = Carrinho_Produto.query.filter_by(
-        carrinho_id=carrinho_id, 
-        produto_id=produto_id
+            carrinho_id=carrinho_id, produto_id=produto_id
         ).first()
         if not produto:
             raise AttributeError(
@@ -128,12 +133,13 @@ class ValidatorCarrinho:
             produto = Produtos.query.filter_by(id=item.produto_id).first()
             if produto.qtd_estoque < item.quantidade:
                 raise AttributeError(
-                    {"Error": f"A loja não possui esta quantidade de {produto.descricao} no estoque.",
-                    "Recebido": float(item.quantidade),
-                    "Disponível": produto.qtd_estoque
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
+                    {
+                        "Error": f"A loja não possui esta quantidade de {produto.descricao} no estoque.",
+                        "Recebido": float(item.quantidade),
+                        "Disponível": produto.qtd_estoque,
+                    },
+                    HTTPStatus.BAD_REQUEST,
+                )
             produto.qtd_estoque -= item.quantidade
             add_commit(produto)
 
@@ -153,8 +159,9 @@ class ValidatorCarrinho:
     def check_endereco(endereco_id):
         if not endereco_id:
             raise AttributeError(
-                {"Error": "Cliente sem endereco cadastrado, favor cadastrar para concluir a compra."},
+                {
+                    "Error": "Cliente sem endereco cadastrado, favor cadastrar para concluir a compra."
+                },
                 HTTPStatus.BAD_REQUEST,
             )
-        return endereco_id 
-
+        return endereco_id

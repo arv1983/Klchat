@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+from sqlalchemy.sql.elements import Null
+
 from app.exc import InputError
 
 from app.services.regex import ValidatorRegex
@@ -13,12 +15,18 @@ class ValidatorSignup:
     SIGNUP = ["nome", "email", "tipo_usuario", "senha", "telefone"]
     TYPE_USUARIO = ["lojista", "cliente"]
 
-    def signup(self, data: dict) -> dict:
+    def signup(self, data: dict):
         validate = ValidatorRegex()
 
         if not data:
             raise InputError(
-                {"Error": "request sem dados.", "Obrigatórios": self.TYPE_USUARIO},
+                {
+                    "Error": "request sem dados no body.",
+                    "São obrigatórios": {
+                        "tipo_usuário": self.TYPE_USUARIO,
+                        "Campos obrigatórios": self.SIGNUP,
+                    },
+                },
                 HTTPStatus.BAD_REQUEST,
             )
 
@@ -30,7 +38,11 @@ class ValidatorSignup:
                 {
                     "Error": "Faltam campos obrigatórios",
                     "recebido": [inf for inf in data],
-                    "faltante": [req for req in requered],
+                    "faltantes": {
+                        "Campos": requered,
+                        "pessoa Física": "cpf",
+                        "pessoa Jurídica": "cnpj",
+                    },
                 },
                 HTTPStatus.BAD_REQUEST,
             )
@@ -57,8 +69,7 @@ class ValidatorSignup:
         if not _telefone:
             raise InputError(
                 {
-                    "Error": "Telefone com erro",
-                    "recebido": _telefone,
+                    "Error": "Telefone inválido, precisa ter 10 ou 11 digitros",
                 },
                 HTTPStatus.BAD_REQUEST,
             )
@@ -66,83 +77,94 @@ class ValidatorSignup:
         data["telefone"] = _telefone
 
         # validar senha minimo 4
-        if len(data.get("senha")) < 4:
+        _senha = str(data.get("senha"))
+        if len(_senha) < 4:
             raise InputError(
                 {
-                    "Error": "Senha precisa no mínimo 4 caracteres!",
-                    "recebido": data.get("senha"),
+                    "Error": "Senha com mínimo 4 caracteres!",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+        data["senha"] = _senha
+
+        # validar email
+        _email = validate.email(data.get("email", None))
+        print("============", _email)
+        if not _email:
+            raise InputError(
+                {
+                    "Error": "Email com formato inválido.",
                 },
                 HTTPStatus.BAD_REQUEST,
             )
 
-        # valiar email
-        if not ValidatorRegex.email(data.get("email")):
+        # cpf / cnpj
+        if not data.get("cpf", None) and not data.get("cnpj", None):
             raise InputError(
                 {
-                    "Error": "Email com erro",
-                    "recebido": data.get("email"),
-                },
-                HTTPStatus.BAD_REQUEST,
+                    "Error": "cpf e ou cnpj não enviado",
+                    "pessoa Físcia": "Obrigatório cadastrar cpf",
+                    "pessoa jurídica": "Obrigatório cadastrar cnpj",
+                }
             )
+
+        # Valida cpf e cnpj
+        _cpf = validate.cpf(data.get("cpf", None))
+        _cnpj = validate.cnpj(data.get("cnpj", None))
 
         # Validacao  se lojista
         if data.get("tipo_usuario") == "lojista":
-            # cnpj
-            _cnpj = validate.cnpj(data.get("cnpj"))
+
             if not _cnpj:
                 raise InputError(
-                    {
-                        "Error": "cnpj com erro ou não enviado",
-                        "recebido": _cnpj,
-                    },
+                    {"Error": "cnpj inválido"},
                     HTTPStatus.BAD_REQUEST,
                 )
             data["cnpj"] = _cnpj
 
-            # se email em db
+            # verifica email e cnpj existe no db lojista
             loj_email = Lojistas.query.filter_by(email=data.get("email")).first()
-
             loj_cnpj = Lojistas.query.filter_by(cnpj=data.get("cnpj")).first()
 
             if loj_cnpj or loj_email:
                 raise InputError(
                     {
-                        "Error": "Email ou cnpj já cadastrado",
-                        "recebido": {"cnpj": _cnpj, "email": data.get("email")},
+                        "Error": "Email e ou cnpj já cadastrado",
                     },
                     HTTPStatus.BAD_REQUEST,
                 )
 
         # Validação se Cliente
         else:
-            # cpf / cnpj
-            _cpf = validate.cpf(data.get("cpf", None))
-            _cnpj = validate.cnpj(data.get("cnpj", None))
 
             if not _cpf and not _cnpj:
                 raise InputError(
                     {
-                        "Error": "cpf ou cnpj com erro ou não enviado, obrigatório um dos dois.",
-                        "recebido": _cpf if _cpf else _cnpj,
+                        "Error": "cpf ou cnpj inválido.",
                     },
                     HTTPStatus.BAD_REQUEST,
                 )
 
+            cli_cpf = None
+            cli_cnpj = None
+            cli_email = None
+
+            # Verifica se cpf, cnpj ou email existe no db cliente
             if _cpf:
                 data["cpf"] = _cpf
+                cli_cpf = Clientes.query.filter_by(cpf=_cpf).first()
             if _cnpj:
                 data["cnpj"] = _cnpj
+                cli_cnpj = Clientes.query.filter_by(cnpj=_cnpj).first()
 
-            # email in db
-            cli_email = Clientes.query.filter_by(email=data.get("email")).first()
-            cli_cpf = Clientes.query.filter_by(cpf=data.get("cpf")).first()
-            cli_cnpj = Clientes.query.filter_by(cpf=data.get("cpf")).first()
+            cli_email = Clientes.query.filter_by(email=_email).first()
+
+            print("cnpj", cli_cnpj, "cpf", cli_cpf, "email", cli_email)
 
             if cli_email or cli_cpf or cli_cnpj:
                 raise InputError(
                     {
-                        "Error": "Email ou cpf já cadastrado",
-                        "recebido": {"cnpj": _cpf, "email": data.get("email")},
+                        "Error": "Email, cpf e ou cnpj já cadastrado",
                     },
                     HTTPStatus.BAD_REQUEST,
                 )

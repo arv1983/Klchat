@@ -1,7 +1,7 @@
-from flask import Blueprint 
+from flask import Blueprint
 
 
-bp = Blueprint("bp_home",__name__)
+bp = Blueprint("bp_home", __name__)
 
 
 @bp.get("/")
