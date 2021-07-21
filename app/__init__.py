@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from environs import Env
-
+from datetime import timedelta
 from app.configs import database, migrate, commands
 from app import views
 
@@ -17,8 +17,7 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JSON_SORT_KEYS"] = False
     app.config["JWT_SECRET_KEY"] = env("JWT_SECRET_KEY")
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
-    # Token nunca expira - REMOVER APOS TERMINAR
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
     database.init_app(app)
     migrate.init_app(app)
