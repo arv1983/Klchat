@@ -85,7 +85,7 @@ def test_signup_lojista(signup):
     """
     ger = GeratorData()
     val = ValidatorRegex()
-    data = ger.create_client_cnpj()
+    data = ger.create_lojista()
     url = "/signup"
 
     response = signup.post(url, json=data)
@@ -93,7 +93,6 @@ def test_signup_lojista(signup):
     res = response.get_json()
 
     data["cnpj"] = val.cnpj(data.get("cnpj"))
-
     data["telefone"] = val.telefone(data.get("telefone"))
 
     except_dict = {
@@ -101,7 +100,6 @@ def test_signup_lojista(signup):
         "nome": data.get("nome"),
         "email": data.get("email"),
         "cnpj": data.get("cnpj"),
-        "cpf": None,
         "telefone": data.get("telefone"),
         "endereco_id": None,
     }
