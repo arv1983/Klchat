@@ -27,7 +27,7 @@ def inserir_carrinho():
             )
             if verify:
                 return {
-                    "Error": "Este produto já está no carrinho"
+                    "Error": "Este produto já está no carrinho, use o metodo PATCH passando o id do produto se quiser alterar a quantidade"
                 }, HTTPStatus.BAD_REQUEST
         except:
 
