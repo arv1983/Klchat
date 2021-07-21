@@ -1,9 +1,9 @@
+from operator import add
 from flask import current_app
 from flask import request, Blueprint, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
-from sqlalchemy.sql.elements import BinaryExpression
-from sqlalchemy.sql.functions import user
+import re
 
 from app.exc import InputError
 from app.services.services import add_commit
@@ -19,7 +19,7 @@ bp = Blueprint("bp_endereco", __name__)
 
 @bp.route("/endereco", methods=["POST", "GET", "PUT"])
 @jwt_required()
-def criar_endereco():
+def endereco():
     data = request.get_json()
 
     cliente = Clientes.query.filter_by(email=get_jwt_identity()).first()
@@ -41,7 +41,7 @@ def criar_endereco():
         setattr(user, "endereco_id", novo_endereco.id)
         add_commit(user)
 
-        return {"endereco": "cadastrado"}, HTTPStatus.OK
+        return {"endereco": "cadastrado"}, HTTPStatus.CREATED
 
     if request.method == "GET":
 
@@ -59,13 +59,10 @@ def criar_endereco():
 
         try:
             data = validator.check_data(data)
+            address = Endereco.query.filter_by(id=user.endereco_id).first()
+            validator.update_address(address, data)
+
         except InputError as err:
             return err.args
-
-        update_endereco = Endereco(**data)
-        add_commit(update_endereco)
-        user.endereco_id = update_endereco.id
-        setattr(user, "endereco_id", update_endereco.id)
-        add_commit(user)
 
         return jsonify({"Endereco": "Atualziado!"}), HTTPStatus.OK
