@@ -10,7 +10,6 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
 
-from sqlalchemy.sql.sqltypes import Date
 
 from app.configs.database import db
 
@@ -32,7 +31,7 @@ class Vendas(db.Model):
     valor_total = Column(Float, nullable=False)
     nota_fiscal = Column(String(255))
     cupom_id = Column(Integer, nullable=False, default=0)
-    data_venda = Column(DateTime, nullable=False, default=datetime.datetime.utcnow )
+    data_venda = Column(DateTime, default=datetime.datetime.now )
     lojista_id = Column(Integer)
     endereco_entrega_id = Column(Integer, ForeignKey("endereco.id"), nullable=False)
     status_id = Column(Integer, ForeignKey("status.id"), nullable=False)

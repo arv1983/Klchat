@@ -23,7 +23,7 @@ class ValidatorProdutos:
             )
 
         requered = [req for req in self.campos if req not in data]
-        if data:
+        if requered:
 
             raise InputError(
                 {
@@ -34,13 +34,13 @@ class ValidatorProdutos:
                 HTTPStatus.BAD_REQUEST,
             )
 
-        produto = Produtos.query.filter_by(modelo=data.get("modelo")).first()
+        # produto = Produtos.query.filter_by(modelo=data.get("modelo")).first()
 
-        if produto:
-            raise InputError(
-                {"Error": "Produto já Cadastrado", "Recebido": data["modelo"]},
-                HTTPStatus.BAD_REQUEST,
-            )
+        # if produto:
+        #     raise InputError(
+        #         {"Error": "Produto já Cadastrado", "Recebido": data["modelo"]},
+        #         HTTPStatus.BAD_REQUEST,
+        #     )
         return data
 
     def valida_patch(self, data: dict):

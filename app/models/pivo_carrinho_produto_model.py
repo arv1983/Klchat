@@ -20,7 +20,7 @@ class Carrinho_Produto(db.Model):
     id = Column(Integer, primary_key=True)
     quantidade = Column(Float, nullable=False)
     valor_unitario = Column(Float, nullable=False, default=0)
-    data_prod_inserida = Column(DateTime, nullable=False, default=datetime.datetime.utcnow )
+    data_prod_inserida = Column(DateTime, default=datetime.datetime.now )
 
     produto_id = Column(Integer, ForeignKey("produtos.id"), nullable=False)
     lojista_id = Column(Integer)

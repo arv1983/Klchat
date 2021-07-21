@@ -7,7 +7,7 @@ from flask import Blueprint, request, jsonify, current_app
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
-from datetime import datetime
+import datetime
 from ipdb import set_trace
 
 
