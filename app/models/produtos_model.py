@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 from app.configs.database import db
 
-
 @dataclass
 class Produtos(db.Model):
     id: int

@@ -3,7 +3,7 @@ from flask import Flask
 
 def init_app(app: Flask):
     from .signup_views import bp as bp_signup
-    from .perfil_cliente import bp as bp_perfil
+    from .endereco_view import bp as bp_perfil
     from .login_views import bp as bp_login
     from .carrinho_views import bp as bp_carrinho
     from .produtos_views import bp as bp_product
