@@ -5,6 +5,7 @@ from app.models.endereco_model import Endereco
 from app.models.status_model import Status
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
 import datetime
+
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
@@ -20,7 +21,7 @@ class Vendas(db.Model):
     valor_total: Float
     nota_fiscal: str
     cupom_id: int
-    data_venda: date
+    data_venda: datetime
     status_id: int
     endereco_entrega_id: int
     carrinho_id: int
