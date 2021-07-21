@@ -6,6 +6,7 @@ from app.models.produtos_model import Produtos
 from app.models.lojistas_model import Lojistas
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
+from ipdb import set_trace
 
 bp = Blueprint("produtos_route", __name__)
 
@@ -23,8 +24,8 @@ def create_product():
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     if not lojista:
         return {
-        "msg": "Cadastro de produto não permitido para este tipo de usuário!"
-         }, HTTPStatus.BAD_REQUEST
+        "Error": "Cadastro de produto não permitido para este tipo de usuário!"
+         }, HTTPStatus.UNAUTHORIZED
     data["lojista_id"] = lojista.id
     add_commit(Produtos(**data))
     return data, HTTPStatus.CREATED
@@ -41,9 +42,9 @@ def search_produto():
     lojista = request.args.get("lojista_id", None)
 
     produtos = Produtos.query.filter(
-        Produtos.descricao.like(f"%{descricao}%"),
-        Produtos.marca.like(f"%{marca}%"),
-        Produtos.modelo.like(f"%{modelo}%"),
+        Produtos.descricao.ilike(f"%{descricao}%"),
+        Produtos.marca.ilike(f"%{marca}%"),
+        Produtos.modelo.ilike(f"%{modelo}%"),
         Produtos.lojista_id == (lojista) if lojista else Produtos.lojista_id > 0,
         Produtos.valor_unitario >= minimo,
         Produtos.valor_unitario <= maximo,

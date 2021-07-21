@@ -1,6 +1,8 @@
+from app.models.categorias_model import Categorias
 from app.models.produtos_model import Produtos
 from app.exc import InputError
 from http import HTTPStatus
+from ipdb import set_trace
 
 
 class ValidatorProdutos:
@@ -35,6 +37,13 @@ class ValidatorProdutos:
             )
 
         produto = Produtos.query.filter_by(modelo=data.get("modelo")).first()
+
+        categoria = Categorias.query.filter_by(id=data['categoria_id']).first()
+        if not categoria:
+            raise InputError(
+            {"Error": "Categoria não encontrada, consulte o endpoint /categorias."},
+            HTTPStatus.BAD_REQUEST,
+        )
 
         if produto:
             raise InputError(
