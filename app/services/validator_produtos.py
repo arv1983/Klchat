@@ -41,6 +41,18 @@ class ValidatorProdutos:
                 {"Error": "Produto já Cadastrado, não é permitido duplicar o modelo.", "Recebido": {"modelo": data["modelo"]}},
                 HTTPStatus.BAD_REQUEST,
             )
+
+        if data["valor_unitario"] <= 0:
+            raise InputError(
+                {"Error": "Valor do produto precisa ser maior que 0."},
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        if data["qtd_estoque"] <= 0:
+            raise InputError(
+                {"Error": "Estoque precisa ser maior que 0."},
+                HTTPStatus.BAD_REQUEST,
+            )
         return data
 
     def valida_patch(self, data: dict):
