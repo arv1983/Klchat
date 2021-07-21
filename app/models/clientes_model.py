@@ -1,3 +1,4 @@
+from app.models.endereco_model import Endereco
 from flask import jsonify
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
@@ -55,9 +56,18 @@ class Clientes(db.Model):
             "carrinho_id": self.carrinho_id,
         }
         if self.endereco_id:
-            data["endereco_id"] = self.endereco_id
+            endereco = Endereco.query.filter_by(id = self.id).first()
+            data["endereco"] = {
+                "Logradouro": endereco.logradouro,
+                "Numero": endereco.numero,
+                "Bairro": endereco.bairro,
+                "Complemento": endereco.complemento,
+                "Cidade": endereco.cidade,
+                "Estado": endereco.estado,
+                "CEP": endereco.cep
+            }
         if self.cnpj:
             data["cnpj"] = self.cnpj
         if self.cpf:
             data["cpf"] = self.cpf
-        return jsonify(data)
+        return data
