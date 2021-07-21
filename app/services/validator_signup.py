@@ -69,7 +69,7 @@ class ValidatorSignup:
         if not _telefone:
             raise InputError(
                 {
-                    "Error": "Telefone inválido, precisa de 11 digitros",
+                    "Error": "Telefone inválido, precisa ter 10 ou 11 digitros",
                 },
                 HTTPStatus.BAD_REQUEST,
             )
@@ -78,7 +78,7 @@ class ValidatorSignup:
 
         # validar senha minimo 4
         _senha = str(data.get("senha"))
-        if len(data.get("senha")) < 4:
+        if len(_senha) < 4:
             raise InputError(
                 {
                     "Error": "Senha com mínimo 4 caracteres!",
@@ -89,6 +89,7 @@ class ValidatorSignup:
 
         # validar email
         _email = validate.email(data.get("email", None))
+        print("============", _email)
         if not _email:
             raise InputError(
                 {
