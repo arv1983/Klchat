@@ -116,7 +116,7 @@ class ValidatorCarrinho:
         ).first()
         if not produto:
             raise AttributeError(
-                {"Error": "Este produto não se encontra neste carrinho, use o metodo PATCH passando o id do produto se quiser alterar a quantidade."},
+                {"Error": "Este produto não se encontra neste carrinho."},
                 HTTPStatus.BAD_REQUEST,
             )
         return produto
