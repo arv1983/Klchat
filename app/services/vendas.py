@@ -42,17 +42,3 @@ def ver_venda(venda_id, email, action):
 
     except AttributeError as err:
         return err.args
-
-def ver_vendas(email):
-    try:
-        lojista = ValidatorVendas.check_lojista(email)
-        vendas = Vendas.query.filter_by(lojista_id=lojista.id).all()
-        data = []
-        for item in vendas:
-            data.append(item.serialized)
-        return jsonify(data)
-    except InputError as err:
-        return err.args
-
-    except AttributeError as err:
-        return err.args

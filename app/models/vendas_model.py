@@ -4,8 +4,9 @@ from app.models.carrinho_model import Carrinho
 from app.models.endereco_model import Endereco
 from app.models.status_model import Status
 from app.models.pivo_carrinho_produto_model import Carrinho_Produto
-from datetime import date
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+import datetime
+
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
 
@@ -20,7 +21,7 @@ class Vendas(db.Model):
     valor_total: Float
     nota_fiscal: str
     cupom_id: int
-    data_venda: date
+    data_venda: datetime
     status_id: int
     endereco_entrega_id: int
     carrinho_id: int
@@ -31,7 +32,7 @@ class Vendas(db.Model):
     valor_total = Column(Float, nullable=False)
     nota_fiscal = Column(String(255))
     cupom_id = Column(Integer, nullable=False, default=0)
-    data_venda = Column(Date, nullable=False)
+    data_venda = Column(DateTime, nullable=False, default=datetime.datetime.utcnow )
     lojista_id = Column(Integer)
     endereco_entrega_id = Column(Integer, ForeignKey("endereco.id"), nullable=False)
     status_id = Column(Integer, ForeignKey("status.id"), nullable=False)

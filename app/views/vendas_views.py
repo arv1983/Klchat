@@ -1,6 +1,6 @@
 from app.models.status_model import Status
 from app.models.lojistas_model import Lojistas
-from app.services.vendas import alterar_venda, ver_venda, ver_vendas
+from app.services.vendas import alterar_venda, ver_venda
 from app.models.vendas_model import Vendas
 from app.exc import InputError
 from app.services.validator_vendas import ValidatorVendas
@@ -59,9 +59,11 @@ def get_vendas():
             Vendas.status_id == status_query.id if status else Vendas.status_id > 0,
             )
         data = []
+
         for item in vendas:
             data.append(item.serialized)
         return jsonify(data)
+        
     except InputError as err:
         return err.args
 

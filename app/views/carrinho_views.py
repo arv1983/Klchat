@@ -27,7 +27,7 @@ def inserir_carrinho():
             )
             if verify:
                 return {
-                    "Error": "Este produto já está no carrinho"
+                    "Error": "Este produto já está no carrinho, use o metodo PATCH passando o id do produto se quiser alterar a quantidade"
                 }, HTTPStatus.BAD_REQUEST
         except:
 
@@ -39,8 +39,7 @@ def inserir_carrinho():
                 "produto_id": produto.id,
                 "quantidade": data.get("quantidade", 1),
                 "carrinho_id": cliente.carrinho_id,
-                "lojista_id": produto.lojista_id,
-                "data_prod_inserida": datetime.now(),
+                "lojista_id": produto.lojista_id
             }
 
             itens_carrinho = Carrinho_Produto(**item)
@@ -159,11 +158,9 @@ def home():
             produto_atual = Produtos.query.filter_by(id=item.produto_id).first()
             valor_total += produto_atual.valor_unitario
 
-        data_venda = datetime.now()
         venda = {
             "valor_total": valor_total,
             "cupom_id": 0,
-            "data_venda": data_venda,
             "endereco_entrega_id": endereco_id,
             "status_id": 2,
             "carrinho_id": carrinho_id,
