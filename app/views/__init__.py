@@ -11,6 +11,7 @@ def init_app(app: Flask):
     from .vendas_views import bp as bp_vendas
     from .compras_views import bp as bp_compras
     from .categorias_views import bp as bp_categorias
+    from .perfil_views import bp as bp_perfil
 
     app.register_blueprint(bp_product)
     app.register_blueprint(bp_signup)
@@ -21,3 +22,4 @@ def init_app(app: Flask):
     app.register_blueprint(bp_vendas)
     app.register_blueprint(bp_compras)
     app.register_blueprint(bp_categorias)
+    app.register_blueprint(bp_perfil)

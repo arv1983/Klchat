@@ -1,4 +1,4 @@
-from enum import unique
+from app.models.categorias_model import Categorias
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
@@ -30,6 +30,7 @@ class Produtos(db.Model):
 
     @property
     def serialized(self):
+        categoria = Categorias.query.filter_by(id = self.categoria_id).first()
         return {
             "id": self.id,
             "modelo": self.modelo,
@@ -37,6 +38,6 @@ class Produtos(db.Model):
             "marca": self.marca,
             "qtd_estoque": self.qtd_estoque,
             "valor_unitario": self.valor_unitario,
-            "categoria_id": self.categoria_id,
+            "categoria": categoria.descricao,
             "lojista_id": self.lojista_id,
         }

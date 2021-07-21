@@ -41,7 +41,7 @@ def endereco():
         setattr(user, "endereco_id", novo_endereco.id)
         add_commit(user)
 
-        return {"endereco": "cadastrado"}, HTTPStatus.CREATED
+        return {"Ok": "Endereço cadastrado."}, HTTPStatus.CREATED
 
     if request.method == "GET":
 
@@ -65,4 +65,4 @@ def endereco():
         except InputError as err:
             return err.args
 
-        return jsonify({"Endereco": "Atualziado!"}), HTTPStatus.OK
+        return jsonify({"Ok": "Atualziado!"}), HTTPStatus.OK
