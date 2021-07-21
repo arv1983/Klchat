@@ -38,7 +38,7 @@ class ValidatorProdutos:
 
         if produto:
             raise InputError(
-                {"Error": "Produto já Cadastrado", "Recebido": data["modelo"]},
+                {"Error": "Produto já Cadastrado, não é permitido duplicar o modelo.", "Recebido": {"modelo": data["modelo"]}},
                 HTTPStatus.BAD_REQUEST,
             )
         return data
