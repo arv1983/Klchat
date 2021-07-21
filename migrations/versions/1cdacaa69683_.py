@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 80d4af6ea346
+Revision ID: 1cdacaa69683
 Revises: 
-Create Date: 2021-07-14 23:57:34.620904
+Create Date: 2021-07-21 12:05:06.501400
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '80d4af6ea346'
+revision = '1cdacaa69683'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('logradouro', sa.String(length=255), nullable=False),
     sa.Column('numero', sa.String(length=255), nullable=False),
-    sa.Column('complemento', sa.String(length=255), nullable=False),
+    sa.Column('complemento', sa.String(length=255), nullable=True),
     sa.Column('bairro', sa.String(length=255), nullable=False),
     sa.Column('cidade', sa.String(length=255), nullable=False),
     sa.Column('estado', sa.String(length=2), nullable=False),
@@ -48,6 +48,7 @@ def upgrade():
     sa.Column('cnpj', sa.String(length=14), nullable=True),
     sa.Column('telefone', sa.String(length=11), nullable=True),
     sa.Column('endereco_id', sa.Integer(), nullable=True),
+    sa.Column('carrinho_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['endereco_id'], ['endereco.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
@@ -67,29 +68,33 @@ def upgrade():
     op.create_table('carrinho',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('cliente_id', sa.Integer(), nullable=False),
+    sa.Column('status_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['cliente_id'], ['clientes.id'], ),
+    sa.ForeignKeyConstraint(['status_id'], ['status.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('produtos',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('modelo', sa.String(length=100), nullable=False),
     sa.Column('descricao', sa.String(length=255), nullable=False),
     sa.Column('marca', sa.String(length=255), nullable=False),
-    sa.Column('fabricante', sa.String(length=255), nullable=False),
     sa.Column('qtd_estoque', sa.Float(), nullable=False),
-    sa.Column('valor_unitario', sa.Float(), nullable=True),
+    sa.Column('valor_unitario', sa.Float(), nullable=False),
     sa.Column('lojista_id', sa.Integer(), nullable=False),
     sa.Column('categoria_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['categoria_id'], ['categorias.id'], ),
     sa.ForeignKeyConstraint(['lojista_id'], ['lojistas.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('modelo')
     )
     op.create_table('pivo_carrinho_produtos',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('quantidade', sa.Float(), nullable=False),
     sa.Column('valor_unitario', sa.Float(), nullable=False),
-    sa.Column('data_prod_inserida', sa.Date(), nullable=False),
+    sa.Column('data_prod_inserida', sa.DateTime(), nullable=True),
     sa.Column('produto_id', sa.Integer(), nullable=False),
     sa.Column('carrinho_id', sa.Integer(), nullable=False),
+    sa.Column('lojista_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['carrinho_id'], ['carrinho.id'], ),
     sa.ForeignKeyConstraint(['produto_id'], ['produtos.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -97,9 +102,10 @@ def upgrade():
     op.create_table('vendas',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('valor_total', sa.Float(), nullable=False),
-    sa.Column('nota_fiscal', sa.String(length=255), nullable=False),
+    sa.Column('nota_fiscal', sa.String(length=255), nullable=True),
     sa.Column('cupom_id', sa.Integer(), nullable=False),
-    sa.Column('data_venda', sa.Date(), nullable=False),
+    sa.Column('data_venda', sa.DateTime(), nullable=True),
+    sa.Column('lojista_id', sa.Integer(), nullable=True),
     sa.Column('endereco_entrega_id', sa.Integer(), nullable=False),
     sa.Column('status_id', sa.Integer(), nullable=False),
     sa.Column('carrinho_id', sa.Integer(), nullable=False),
