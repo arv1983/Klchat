@@ -122,7 +122,11 @@ def test_signup_dados_faltantes(signup):
     except_dict = {
         "Error": "Faltam campos obrigatórios",
         "recebido": ["tipo_usuario"],
-        "faltante": ["nome", "email", "senha", "telefone"],
+        "faltantes": {
+            "Campos": ["nome", "email", "senha", "telefone"],
+            "pessoa Física": "cpf",
+            "pessoa Jurídica": "cnpj",
+        },
     }
 
     assert type(response.get_json()) == dict
