@@ -21,13 +21,14 @@ def create_product():
         return e.args
 
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
-    if lojista:
-        data["lojista_id"] = lojista.id
-        add_commit(Produtos(**data))
-        return data, HTTPStatus.CREATED
-    return {
+    if not lojista:
+        return {
         "msg": "Cadastro de produto não permitido para este tipo de usuário!"
-    }, HTTPStatus.BAD_REQUEST
+         }, HTTPStatus.BAD_REQUEST
+    data["lojista_id"] = lojista.id
+    add_commit(Produtos(**data))
+    return data, HTTPStatus.CREATED
+    
 
 
 @bp.get("/produtos")
