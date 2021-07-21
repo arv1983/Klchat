@@ -1,3 +1,4 @@
+from app.models.categorias_model import Categorias
 from app.services.validator_produtos import ValidatorProdutos
 from app.exc import InputError
 from app.services.services import add_commit
@@ -6,6 +7,7 @@ from app.models.produtos_model import Produtos
 from app.models.lojistas_model import Lojistas
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
+from ipdb import set_trace
 
 bp = Blueprint("produtos_route", __name__)
 
@@ -23,8 +25,8 @@ def create_product():
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     if not lojista:
         return {
-        "msg": "Cadastro de produto não permitido para este tipo de usuário!"
-         }, HTTPStatus.BAD_REQUEST
+        "Error": "Cadastro de produto não permitido para este tipo de usuário!"
+         }, HTTPStatus.UNAUTHORIZED
     data["lojista_id"] = lojista.id
     add_commit(Produtos(**data))
     return data, HTTPStatus.CREATED
@@ -41,9 +43,9 @@ def search_produto():
     lojista = request.args.get("lojista_id", None)
 
     produtos = Produtos.query.filter(
-        Produtos.descricao.like(f"%{descricao}%"),
-        Produtos.marca.like(f"%{marca}%"),
-        Produtos.modelo.like(f"%{modelo}%"),
+        Produtos.descricao.ilike(f"%{descricao}%"),
+        Produtos.marca.ilike(f"%{marca}%"),
+        Produtos.modelo.ilike(f"%{modelo}%"),
         Produtos.lojista_id == (lojista) if lojista else Produtos.lojista_id > 0,
         Produtos.valor_unitario >= minimo,
         Produtos.valor_unitario <= maximo,
@@ -67,8 +69,8 @@ def update_produto(produto_id):
     lojista = Lojistas.query.filter_by(email=get_jwt_identity()).first()
     if produto.lojista_id != lojista.id:
         return {
-            "Error": "Cadastro de produto não permitido para este tipo de usuário!",
-            "lojista_id logado": lojista.id,
+            "Error": "Alteração não permitida para este usuário!",
+            "lojista_id atual": lojista.id,
             "lojista_id do produto": produto.lojista_id,
         }, HTTPStatus.BAD_REQUEST
 
@@ -81,6 +83,10 @@ def update_produto(produto_id):
         elm = validate.valida_patch(data)
 
         for key, value in data.items():
+            if key == "categoria_id":
+                categoria = Categorias.query.filter_by(id=value).first()
+                if not categoria:
+                    return {"Error": "Categoria não encontrada, consulte o endpoint /categorias."}, 404
             setattr(produto, key, value)
 
         add_commit(produto)
@@ -92,3 +98,14 @@ def update_produto(produto_id):
         return e.args, HTTPStatus.INTERNAL_SERVER_ERROR
 
     return {"inf": "Produto atualizado!"}, HTTPStatus.OK
+
+
+@bp.get("/produtos/<int:produto_id>")
+def get_produto_id(produto_id):
+
+    produto = Produtos.query.filter_by(id = produto_id).first()
+
+    if not produto:
+        return {"Error": "Produto não encontrado."}, 404
+
+    return jsonify(produto.serialized)

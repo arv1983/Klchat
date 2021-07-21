@@ -1,3 +1,4 @@
+from app.models.endereco_model import Endereco
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
@@ -30,14 +31,27 @@ class Lojistas(db.Model):
 
     @property
     def serialized(self):
-        return {
+        data = {
             "id": self.id,
             "nome": self.nome,
             "email": self.email,
             "telefone": self.telefone,
             "cnpj": self.cnpj,
-            "enderco_id": self.endereco_id,
         }
+
+        if self.endereco_id:
+            endereco = Endereco.query.filter_by(id = self.id).first()
+            if endereco:
+                data["endereco"] = {
+                    "Logradouro": endereco.logradouro,
+                    "Numero": endereco.numero,
+                    "Bairro": endereco.bairro,
+                    "Complemento": endereco.complemento,
+                    "Cidade": endereco.cidade,
+                    "Estado": endereco.estado,
+                    "CEP": endereco.cep
+                }
+        return data
 
     @property
     def password(self):
