@@ -29,7 +29,20 @@ class GeratorData:
             cnpj=GeratorData.generate_cnpj(),
             telefone=faker.cellphone_number()[4:-1],
         )
-        print("----->", data)
+        return data
+
+    @staticmethod
+    def create_lojista() -> dict:
+        faker = Faker("pt_BR")
+        data = dict(
+            tipo_usuario="lojista",
+            nome=faker.name(),
+            email=faker.email(),
+            senha="1234",
+            cnpj=GeratorData.generate_cnpj(),
+            telefone=faker.cellphone_number()[4:-1],
+        )
+
         return data
 
     @staticmethod
