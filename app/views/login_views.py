@@ -15,7 +15,7 @@ def login():
     senha = request.json.get("senha", None)
     cliente = Clientes.query.filter_by(email=email).first()
     lojista = Lojistas.query.filter_by(email=email).first()
-    msg = "Usuário não encontrado"
+    msg = "Usuário e/ou senha inválidos."
     if cliente:
         user = cliente
     elif lojista:
@@ -24,4 +24,4 @@ def login():
     if user and user.check_password(senha):
         token = create_access_token(identity=email)
         return jsonify(access_token=token)
-    return jsonify(msg=msg), HTTPStatus.NOT_FOUND
+    return jsonify(Error=msg), HTTPStatus.NOT_FOUND
