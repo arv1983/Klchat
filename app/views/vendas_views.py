@@ -17,21 +17,21 @@ from ipdb import set_trace
 bp = Blueprint("vendas_route", __name__)
 
 
-@bp.get("/vendas/<int:venda_id>/aprovar")
+@bp.patch("/vendas/<int:venda_id>/aprovar")
 @jwt_required()
 def aprovar_venda(venda_id):
 
     return alterar_venda(venda_id, get_jwt_identity(), "aprovar")
 
 
-@bp.get("/vendas/<int:venda_id>/despachar")
+@bp.patch("/vendas/<int:venda_id>/despachar")
 @jwt_required()
 def despachar_venda(venda_id):
 
     return alterar_venda(venda_id, get_jwt_identity(), "despachar")
 
 
-@bp.get("/vendas/<int:venda_id>/cancelar")
+@bp.patch("/vendas/<int:venda_id>/cancelar")
 @jwt_required()
 def cancelar_venda(venda_id):
 

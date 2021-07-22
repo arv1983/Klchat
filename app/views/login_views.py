@@ -15,7 +15,7 @@ def login():
     senha = request.json.get("senha", None)
     cliente = Clientes.query.filter_by(email=email).first()
     lojista = Lojistas.query.filter_by(email=email).first()
-    msg = "Usuário e/ou senha inválidos."
+    msg = "Usuário e/ou senha inválidos.    "
     if cliente:
         user = cliente
     elif lojista:

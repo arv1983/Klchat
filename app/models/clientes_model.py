@@ -57,15 +57,16 @@ class Clientes(db.Model):
         }
         if self.endereco_id:
             endereco = Endereco.query.filter_by(id = self.id).first()
-            data["endereco"] = {
-                "Logradouro": endereco.logradouro,
-                "Numero": endereco.numero,
-                "Bairro": endereco.bairro,
-                "Complemento": endereco.complemento,
-                "Cidade": endereco.cidade,
-                "Estado": endereco.estado,
-                "CEP": endereco.cep
-            }
+            if endereco:
+                data["endereco"] = {
+                    "Logradouro": endereco.logradouro,
+                    "Numero": endereco.numero,
+                    "Bairro": endereco.bairro,
+                    "Complemento": endereco.complemento,
+                    "Cidade": endereco.cidade,
+                    "Estado": endereco.estado,
+                    "CEP": endereco.cep
+                }
         if self.cnpj:
             data["cnpj"] = self.cnpj
         if self.cpf:
